@@ -5,25 +5,26 @@ import SwiftData
 /// extension writes raw payload as `.pending`; main app fills FM results and sets `.processed`.
 @Model
 public final class SavedItem {
-    public var id: UUID
-    public var createdAt: Date
-    public var status: ItemStatus
+    // Defaults are required for non-optional attributes under SwiftData + CloudKit.
+    public var id: UUID = UUID()
+    public var createdAt: Date = Date.now
+    public var status: ItemStatus = ItemStatus.pending
 
     // Raw payload (written by the Share Extension).
-    public var rawType: RawType
+    public var rawType: RawType = RawType.text
     public var rawURL: URL?
     public var rawText: String?
     public var imageFilename: String?   // file in App Group, not a DB blob
 
     // FM analysis results (written by the main app).
     public var category: ItemCategory?
-    public var tags: [String]
+    public var tags: [String] = []
     public var summary: String?
     public var title: String?
 
     // Nudge mechanics.
     public var lastNudgedAt: Date?
-    public var isArchived: Bool
+    public var isArchived: Bool = false
     public var openedAt: Date?
 
     public init(

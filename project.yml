@@ -59,6 +59,7 @@ targets:
         UIBackgroundModes:
           - fetch
           - processing
+          - remote-notification
         BGTaskSchedulerPermittedIdentifiers:
           - app.knooq.ios.nudge-check
     settings:

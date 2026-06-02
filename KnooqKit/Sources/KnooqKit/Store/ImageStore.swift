@@ -11,12 +11,13 @@ public struct ImageStore: Sendable {
         self.directory = directory
     }
 
-    /// Production store: <AppGroup>/Images.
+    /// Shared store: <AppGroup>/Images when entitled (extension + app see the same files),
+    /// else a local Application Support/Images fallback so dev/unsigned builds still run.
     public static func appGroup() -> ImageStore {
-        let base = FileManager.default
-            .containerURL(forSecurityApplicationGroupIdentifier: KnooqShared.appGroupID)!
-            .appendingPathComponent("Images", isDirectory: true)
-        return ImageStore(directory: base)
+        let root = FileManager.default
+            .containerURL(forSecurityApplicationGroupIdentifier: KnooqShared.appGroupID)
+            ?? FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+        return ImageStore(directory: root.appendingPathComponent("Images", isDirectory: true))
     }
 
     public func url(for filename: String) -> URL {

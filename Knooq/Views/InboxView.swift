@@ -100,6 +100,10 @@ struct FilterChipsView: View {
         VStack(alignment: .leading, spacing: 8) {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
+                    FilterChip(label: "All", systemImage: "tray.full",
+                               isOn: selectedCategory == nil) {
+                        selectedCategory = nil
+                    }
                     ForEach(ItemCategory.allCases, id: \.self) { category in
                         FilterChip(label: category.rawValue,
                                    systemImage: category.symbol,

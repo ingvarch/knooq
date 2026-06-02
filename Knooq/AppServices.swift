@@ -1,11 +1,13 @@
 import Foundation
 import SwiftData
+import FoundationModels
 import KnooqKit
 
 /// Owns the container + pipeline and runs the launch/foreground refresh.
-/// Reentrancy-guarded so overlapping `.task` and scenePhase triggers can't run concurrently
-/// (which would race the processor and its extractors).
+/// Reentrancy-guarded so overlapping `.task` and scenePhase triggers can't run concurrently.
+/// Also tracks Apple Intelligence availability so the UI can gate on it.
 @MainActor
+@Observable
 final class AppServices {
     let container: ModelContainer
     private let processor: ItemProcessor
@@ -13,12 +15,17 @@ final class AppServices {
     private var isRefreshing = false
     private var didRequestPermission = false
 
+    /// Apple Intelligence state for the UI gate.
+    private(set) var isModelReady = false
+    private(set) var modelMessage = ""
+
     init() {
         let container = KnooqStore.resilientContainer()
         self.container = container
         self.processor = ItemProcessor(analyzer: FMAnalyzer(), extractor: CompositeTextExtractor())
         self.nudgeScheduler = NudgeScheduler(container: container)
         nudgeScheduler.registerBackgroundTask()
+        checkAvailability()
     }
 
     func onLaunch() async {
@@ -30,15 +37,39 @@ final class AppServices {
         nudgeScheduler.scheduleBackgroundTask()
     }
 
-    /// Import Share-Extension captures, process pending items, run the nudge check.
+    /// Re-check availability, import Share captures, process pending (only if the model is ready),
+    /// run the nudge check.
     func refresh() async {
         guard !isRefreshing else { return }
         isRefreshing = true
         defer { isRefreshing = false }
 
+        checkAvailability()
         importCaptures()
-        await processPendingItems()
+        if isModelReady {
+            await processPendingItems()
+        }
         await nudgeScheduler.runNudgeCheck()
+    }
+
+    func checkAvailability() {
+        switch SystemLanguageModel.default.availability {
+        case .available:
+            isModelReady = true
+            modelMessage = ""
+        case .unavailable(.appleIntelligenceNotEnabled):
+            isModelReady = false
+            modelMessage = "Apple Intelligence is turned off. Turn it on in Settings so Knooq can organize what you save."
+        case .unavailable(.deviceNotEligible):
+            isModelReady = false
+            modelMessage = "This device doesn't support Apple Intelligence, which Knooq needs to work."
+        case .unavailable(.modelNotReady):
+            isModelReady = false
+            modelMessage = "Apple Intelligence is getting ready (downloading the model). This can take a few minutes on Wi‑Fi."
+        case .unavailable:
+            isModelReady = false
+            modelMessage = "Apple Intelligence is unavailable right now. Try again shortly."
+        }
     }
 
     private func importCaptures() {
@@ -53,7 +84,12 @@ final class AppServices {
                 rawText: capture.text,
                 imageFilename: capture.imageFilename
             )
-            item.title = CaptureTitle.provisional(rawType: capture.rawType, urlString: capture.urlString, text: capture.text)
+            if let note = capture.note, !note.isEmpty {
+                item.title = note
+                item.userTitled = true
+            } else {
+                item.title = CaptureTitle.provisional(rawType: capture.rawType, urlString: capture.urlString, text: capture.text)
+            }
             context.insert(item)
         }
         try? context.save()
@@ -62,8 +98,6 @@ final class AppServices {
     private func processPendingItems() async {
         let context = container.mainContext
         guard let items = try? context.fetch(FetchDescriptor<SavedItem>()) else { return }
-        // Retry items that failed on a previous run (captured before this pass, so we don't
-        // immediately re-retry anything that fails right now — that waits for the next refresh).
         let previouslyFailed = items.filter { $0.status == .failed }
         await processor.processAll(items)
         await processor.retryFailed(previouslyFailed)

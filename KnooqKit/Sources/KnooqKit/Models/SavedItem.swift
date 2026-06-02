@@ -21,6 +21,7 @@ public final class SavedItem {
     public var tags: [String] = []
     public var summary: String?
     public var title: String?
+    public var userTitled: Bool = false   // true when the user typed the title; FM won't overwrite it
 
     // Diagnostics: why the last processing attempt failed (nil when not failed).
     public var failureReason: String?

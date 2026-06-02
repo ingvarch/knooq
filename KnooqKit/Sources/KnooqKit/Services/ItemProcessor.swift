@@ -40,7 +40,7 @@ public final class ItemProcessor: Sendable {
             let analysis = try await analyzer.analyze(String(text.prefix(maxTextLength)))
             item.category = analysis.category
             item.tags = analysis.tags
-            item.title = analysis.title
+            if !item.userTitled { item.title = analysis.title }
             item.summary = analysis.summary
             item.status = .processed
             item.failureReason = nil

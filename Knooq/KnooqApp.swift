@@ -8,7 +8,7 @@ struct KnooqApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(services: services)
                 .task { await services.onLaunch() }
                 .onChange(of: scenePhase) { _, phase in
                     if phase == .active { Task { await services.refresh() } }
@@ -19,7 +19,13 @@ struct KnooqApp: App {
 }
 
 struct ContentView: View {
+    let services: AppServices
+
     var body: some View {
-        InboxView()
+        if services.isModelReady {
+            InboxView()
+        } else {
+            AvailabilityGateView(message: services.modelMessage)
+        }
     }
 }

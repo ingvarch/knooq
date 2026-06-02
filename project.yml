@@ -1,0 +1,107 @@
+name: Knooq
+
+options:
+  bundleIdPrefix: app.knooq.ios
+  deploymentTarget:
+    iOS: "26.0"
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_STYLE: Automatic
+    GENERATE_INFOPLIST_FILE: YES
+
+targets:
+
+  KnooqKit:
+    type: framework
+    platform: iOS
+    sources:
+      - KnooqKit/Sources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.knooq.ios.kit
+
+  Knooq:
+    type: application
+    platform: iOS
+    sources:
+      - Knooq
+    dependencies:
+      - target: KnooqKit
+        embed: true
+      - target: KnooqShare
+    entitlements:
+      path: Knooq/Knooq.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.app.knooq.ios
+        com.apple.developer.icloud-container-identifiers:
+          - iCloud.app.knooq.ios
+        com.apple.developer.icloud-services:
+          - CloudKit
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.knooq.ios
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+
+  KnooqShare:
+    type: app-extension
+    platform: iOS
+    sources:
+      - KnooqShare
+    dependencies:
+      - target: KnooqKit
+        embed: false
+    entitlements:
+      path: KnooqShare/KnooqShare.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.app.knooq.ios
+        com.apple.developer.icloud-container-identifiers:
+          - iCloud.app.knooq.ios
+        com.apple.developer.icloud-services:
+          - CloudKit
+    info:
+      path: KnooqShare/Info.plist
+      properties:
+        CFBundleDisplayName: Knooq
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.share-services
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).ShareViewController
+          NSExtensionAttributes:
+            NSExtensionActivationRule:
+              NSExtensionActivationSupportsWebURLWithMaxCount: 1
+              NSExtensionActivationSupportsImageWithMaxCount: 1
+              NSExtensionActivationSupportsText: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.knooq.ios.share
+
+  KnooqKitTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - KnooqKitTests
+    dependencies:
+      - target: KnooqKit
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.knooq.ios.kit.tests
+
+  KnooqTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - KnooqTests
+    dependencies:
+      - target: Knooq
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.knooq.ios.tests

@@ -22,6 +22,9 @@ public final class SavedItem {
     public var summary: String?
     public var title: String?
 
+    // Diagnostics: why the last processing attempt failed (nil when not failed).
+    public var failureReason: String?
+
     // Nudge mechanics.
     public var lastNudgedAt: Date?
     public var isArchived: Bool = false

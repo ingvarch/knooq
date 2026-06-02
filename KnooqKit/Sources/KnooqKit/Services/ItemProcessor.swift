@@ -24,21 +24,39 @@ public final class ItemProcessor: Sendable {
     @MainActor
     public func process(_ item: SavedItem) async {
         guard item.status == .pending else { return }
+
+        let text: String
         do {
-            let text = try await extractor.extract(from: RawPayload(item))
-            guard text.count >= minTextLength else {
-                item.status = .failed
-                return
-            }
+            text = try await extractor.extract(from: RawPayload(item))
+        } catch {
+            return fail(item, "Couldn't read content: \(Self.message(error))")
+        }
+
+        guard text.count >= minTextLength else {
+            return fail(item, "Too little text to analyze (\(text.count) chars)")
+        }
+
+        do {
             let analysis = try await analyzer.analyze(String(text.prefix(maxTextLength)))
             item.category = analysis.category
             item.tags = analysis.tags
             item.title = analysis.title
             item.summary = analysis.summary
             item.status = .processed
+            item.failureReason = nil
         } catch {
-            item.status = .failed
+            fail(item, "AI analysis failed: \(Self.message(error))")
         }
+    }
+
+    @MainActor
+    private func fail(_ item: SavedItem, _ reason: String) {
+        item.status = .failed
+        item.failureReason = reason
+    }
+
+    private static func message(_ error: Error) -> String {
+        (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
     }
 
     @MainActor

@@ -85,6 +85,12 @@ struct ItemCardView: View {
                     .foregroundStyle(.secondary)
                     .lineLimit(2)
             }
+            if item.status == .failed, let reason = item.failureReason {
+                Label(reason, systemImage: "exclamationmark.triangle")
+                    .font(.caption2)
+                    .foregroundStyle(.red)
+                    .lineLimit(2)
+            }
         }
         .padding(.vertical, 4)
     }

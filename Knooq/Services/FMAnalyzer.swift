@@ -1,3 +1,4 @@
+import Foundation
 import FoundationModels
 import KnooqKit
 
@@ -19,8 +20,24 @@ struct FMItemAnalysis {
 /// Production Analyzer backed by the on-device Foundation Model.
 /// Checks availability first and degrades gracefully if the model is not usable.
 final class FMAnalyzer: Analyzer {
-    enum FMError: Error {
+    enum FMError: LocalizedError {
         case modelUnavailable(SystemLanguageModel.Availability)
+
+        var errorDescription: String? {
+            guard case .modelUnavailable(let availability) = self else { return nil }
+            switch availability {
+            case .available:
+                return "model available"
+            case .unavailable(.appleIntelligenceNotEnabled):
+                return "Apple Intelligence is not enabled in Settings"
+            case .unavailable(.deviceNotEligible):
+                return "this device is not eligible for Apple Intelligence"
+            case .unavailable(.modelNotReady):
+                return "the model is still downloading or not ready"
+            case .unavailable(let other):
+                return "model unavailable (\(other))"
+            }
+        }
     }
 
     private let instructions = """

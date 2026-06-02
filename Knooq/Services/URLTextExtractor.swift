@@ -57,12 +57,24 @@ final class URLTextExtractor: NSObject, @unchecked Sendable {
         let script = """
         \(readabilityJS)
         (function() {
+            function meta(sel) { var e = document.querySelector(sel); return e ? (e.content || "") : ""; }
             try {
                 var article = new Readability(document.cloneNode(true)).parse();
-                return article && article.textContent ? article.textContent : document.body.innerText;
-            } catch (e) {
-                return document.body ? document.body.innerText : "";
-            }
+                if (article && article.textContent && article.textContent.trim().length > 50) {
+                    return article.textContent;
+                }
+            } catch (e) {}
+            // Fallback for SPA / login-walled pages (Instagram, YouTube, X): OG + meta tags.
+            var parts = [
+                document.title || "",
+                meta('meta[property="og:title"]'),
+                meta('meta[property="og:description"]'),
+                meta('meta[name="description"]'),
+                meta('meta[property="og:site_name"]'),
+            ];
+            var body = document.body ? document.body.innerText : "";
+            if (body.trim().length > parts.join(" ").trim().length) { parts.push(body); }
+            return parts.filter(Boolean).join("\\n");
         })();
         """
 

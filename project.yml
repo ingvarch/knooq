@@ -58,6 +58,7 @@ targets:
         UILaunchScreen: {}
         UIBackgroundModes:
           - fetch
+          - processing
         BGTaskSchedulerPermittedIdentifiers:
           - app.knooq.ios.nudge-check
     settings:

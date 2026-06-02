@@ -20,20 +20,30 @@ struct KnooqApp: App {
         nudgeScheduler.registerBackgroundTask()
     }
 
+    @Environment(\.scenePhase) private var scenePhase
+
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .task { await onAppLaunch() }
+                .onChange(of: scenePhase) { _, phase in
+                    // Re-import + process when returning to foreground (Share may have run while suspended).
+                    if phase == .active { Task { await refresh() } }
+                }
         }
         .modelContainer(container)
     }
 
     private func onAppLaunch() async {
         _ = await UNNotifier.requestAuthorization()
+        await refresh()
+        nudgeScheduler.scheduleBackgroundTask()
+    }
+
+    private func refresh() async {
         importCaptures()
         await processPendingItems()
         await nudgeScheduler.runNudgeCheck()
-        nudgeScheduler.scheduleBackgroundTask()
     }
 
     /// Drain raw captures written by the Share Extension into SwiftData as .pending items.
@@ -43,13 +53,15 @@ struct KnooqApp: App {
         guard !captures.isEmpty else { return }
         let context = container.mainContext
         for capture in captures {
-            context.insert(SavedItem(
+            let item = SavedItem(
                 createdAt: capture.createdAt,
                 rawType: capture.rawType,
                 rawURL: capture.urlString.flatMap(URL.init(string:)),
                 rawText: capture.text,
                 imageFilename: capture.imageFilename
-            ))
+            )
+            item.title = CaptureTitle.provisional(rawType: capture.rawType, urlString: capture.urlString, text: capture.text)
+            context.insert(item)
         }
         try? context.save()
     }

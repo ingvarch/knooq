@@ -49,11 +49,18 @@ targets:
           - iCloud.app.knooq.ios
         com.apple.developer.icloud-services:
           - CloudKit
+    info:
+      path: Knooq/Info.plist
+      properties:
+        UILaunchScreen: {}
+        UIBackgroundModes:
+          - fetch
+        BGTaskSchedulerPermittedIdentifiers:
+          - app.knooq.ios.nudge-check
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.knooq.ios
-        INFOPLIST_KEY_UILaunchScreen_Generation: YES
-        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        GENERATE_INFOPLIST_FILE: NO
     scheme:
       testTargets:
         - KnooqTests

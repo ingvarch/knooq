@@ -79,8 +79,8 @@ struct ItemCardView: View {
             if !item.tags.isEmpty {
                 TagsRow(tags: item.tags)
             }
-            if let summary = item.summary {
-                Text(summary)
+            if let description = item.displayDescription {
+                Text(description)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .lineLimit(2)

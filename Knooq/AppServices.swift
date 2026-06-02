@@ -84,11 +84,11 @@ final class AppServices {
                 rawText: capture.text,
                 imageFilename: capture.imageFilename
             )
-            if let note = capture.note, !note.isEmpty {
-                item.title = note
-                item.userTitled = true
-            } else {
-                item.title = CaptureTitle.provisional(rawType: capture.rawType, urlString: capture.urlString, text: capture.text)
+            item.title = CaptureTitle.provisional(rawType: capture.rawType, urlString: capture.urlString, text: capture.text)
+            item.note = capture.note?.isEmpty == false ? capture.note : nil
+            if let category = capture.category {
+                item.category = category
+                item.userCategorized = true
             }
             context.insert(item)
         }

@@ -38,9 +38,10 @@ public final class ItemProcessor: Sendable {
 
         do {
             let analysis = try await analyzer.analyze(String(text.prefix(maxTextLength)))
-            item.category = analysis.category
+            if !item.userCategorized { item.category = analysis.category }
             item.tags = analysis.tags
             if !item.userTitled { item.title = analysis.title }
+            // FM writes its own summary; the user's note (item.note) is never touched.
             item.summary = analysis.summary
             item.status = .processed
             item.failureReason = nil

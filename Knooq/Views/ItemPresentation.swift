@@ -3,6 +3,14 @@ import KnooqKit
 
 // Reusable presentation mappings + small chips, shared by Inbox and Detail (DRY).
 
+extension SavedItem {
+    /// Description = user note with the FM summary appended (FM appends, never overwrites the note).
+    var displayDescription: String? {
+        let parts = [note, summary].compactMap { $0 }.filter { !$0.isEmpty }
+        return parts.isEmpty ? nil : parts.joined(separator: "\n\n")
+    }
+}
+
 extension ItemStatus {
     var iconName: String {
         switch self {

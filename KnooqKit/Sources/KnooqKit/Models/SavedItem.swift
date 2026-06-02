@@ -16,12 +16,16 @@ public final class SavedItem {
     public var rawText: String?
     public var imageFilename: String?   // file in App Group, not a DB blob
 
+    // User-entered note from the share card. FM never overwrites this; it appends to `summary`.
+    public var note: String?
+
     // FM analysis results (written by the main app).
     public var category: ItemCategory?
     public var tags: [String] = []
     public var summary: String?
     public var title: String?
-    public var userTitled: Bool = false   // true when the user typed the title; FM won't overwrite it
+    public var userTitled: Bool = false       // user typed the title; FM won't overwrite it
+    public var userCategorized: Bool = false  // user chose the category; FM won't overwrite it
 
     // Diagnostics: why the last processing attempt failed (nil when not failed).
     public var failureReason: String?

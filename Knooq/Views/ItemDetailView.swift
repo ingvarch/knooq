@@ -22,8 +22,8 @@ struct ItemDetailView: View {
                 header
                 categorySection
                 tagsSection
-                if let summary = item.summary {
-                    section("Summary") { Text(summary).font(.body) }
+                if let description = item.displayDescription {
+                    section("Description") { Text(description).font(.body) }
                 }
                 if let url = item.rawURL {
                     Link(destination: url) {

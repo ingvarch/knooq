@@ -1,51 +1,94 @@
-import Social
+import UIKit
+import SwiftUI
 import UniformTypeIdentifiers
 import KnooqKit
 
-/// Native share card with an optional title field (Post/Cancel). Raw capture only:
-/// enqueue the payload (+ typed title) to the App Group queue and close. No SwiftData/CloudKit here.
-final class ShareViewController: SLComposeServiceViewController {
+/// What was shared, prepared for the capture UI. Image is already saved to the App Group;
+/// `imageData` is kept only for the on-screen preview.
+struct SharePayload {
+    let rawType: RawType
+    let url: URL?
+    let text: String?
+    let imageFilename: String?
+    let imageData: Data?
+}
 
-    override func presentationAnimationDidFinish() {
-        super.presentationAnimationDidFinish()
-        placeholder = "Optional title (AI names it if blank)"
+/// Hosts the custom capture screen. Extracts the payload, then shows SwiftUI. Raw capture only:
+/// on Save it enqueues to the App Group queue and closes. No SwiftData/CloudKit/network here.
+final class ShareViewController: UIViewController {
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .systemBackground
+
+        Task {
+            guard let payload = await extractPayload() else { cancel(); return }
+            let root = ShareCaptureView(
+                payload: payload,
+                onCancel: { [weak self] in self?.cancel() },
+                onSave: { [weak self] category, note in self?.save(payload, category: category, note: note) }
+            )
+            embed(UIHostingController(rootView: root))
+        }
     }
 
-    override func isContentValid() -> Bool { true }
+    private func embed(_ child: UIViewController) {
+        addChild(child)
+        child.view.frame = view.bounds
+        child.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        view.addSubview(child.view)
+        child.didMove(toParent: self)
+    }
 
-    override func configurationItems() -> [Any]! { [] }
+    private func cancel() {
+        extensionContext?.cancelRequest(withError: NSError(domain: "Knooq", code: 0))
+    }
 
-    override func didSelectPost() {
-        let note = contentText.trimmingCharacters(in: .whitespacesAndNewlines)
+    private func save(_ payload: SharePayload, category: ItemCategory?, note: String) {
+        let trimmed = note.trimmingCharacters(in: .whitespacesAndNewlines)
+        let now = Date()
+        let capture: PendingCapture
+
+        switch payload.rawType {
+        case .text:
+            // The editable field IS the text content for text shares.
+            capture = PendingCapture(rawType: .text, urlString: nil,
+                                     text: trimmed.isEmpty ? payload.text : trimmed,
+                                     imageFilename: nil, createdAt: now, note: nil, category: category)
+        case .url:
+            capture = PendingCapture(rawType: .url, urlString: payload.url?.absoluteString,
+                                     text: nil, imageFilename: nil, createdAt: now,
+                                     note: trimmed.isEmpty ? nil : trimmed, category: category)
+        case .image:
+            capture = PendingCapture(rawType: .image, urlString: nil, text: nil,
+                                     imageFilename: payload.imageFilename, createdAt: now,
+                                     note: trimmed.isEmpty ? nil : trimmed, category: category)
+        }
+
+        try? CaptureQueue.appGroup().enqueue(capture)
+        extensionContext?.completeRequest(returningItems: nil)
+    }
+
+    // MARK: - Payload extraction
+
+    private func extractPayload() async -> SharePayload? {
         let providers = (extensionContext?.inputItems as? [NSExtensionItem])?
             .compactMap(\.attachments).flatMap { $0 } ?? []
 
-        Task {
-            let queue = CaptureQueue.appGroup()
-            for provider in providers {
-                if let capture = try? await makeCapture(from: provider, note: note.isEmpty ? nil : note) {
-                    try? queue.enqueue(capture)
-                }
+        for provider in providers {
+            if provider.hasItemConformingToTypeIdentifier(UTType.url.identifier),
+               let url = try? await provider.loadItem(forTypeIdentifier: UTType.url.identifier) as? URL {
+                return SharePayload(rawType: .url, url: url, text: nil, imageFilename: nil, imageData: nil)
             }
-            extensionContext?.completeRequest(returningItems: nil)
-        }
-    }
-
-    /// First matching type wins: URL, then image, then plain text.
-    private func makeCapture(from provider: NSItemProvider, note: String?) async throws -> PendingCapture? {
-        let now = Date()
-        if provider.hasItemConformingToTypeIdentifier(UTType.url.identifier),
-           let url = try await provider.loadItem(forTypeIdentifier: UTType.url.identifier) as? URL {
-            return PendingCapture(rawType: .url, urlString: url.absoluteString, text: nil, imageFilename: nil, createdAt: now, note: note)
-        }
-        if provider.hasItemConformingToTypeIdentifier(UTType.image.identifier) {
-            let data = try await loadData(provider, UTType.image.identifier)
-            let filename = try ImageStore.appGroup().save(data)
-            return PendingCapture(rawType: .image, urlString: nil, text: nil, imageFilename: filename, createdAt: now, note: note)
-        }
-        if provider.hasItemConformingToTypeIdentifier(UTType.plainText.identifier),
-           let text = try await provider.loadItem(forTypeIdentifier: UTType.plainText.identifier) as? String {
-            return PendingCapture(rawType: .text, urlString: nil, text: text, imageFilename: nil, createdAt: now, note: note)
+            if provider.hasItemConformingToTypeIdentifier(UTType.image.identifier),
+               let data = try? await loadData(provider, UTType.image.identifier) {
+                let filename = try? ImageStore.appGroup().save(data)
+                return SharePayload(rawType: .image, url: nil, text: nil, imageFilename: filename, imageData: data)
+            }
+            if provider.hasItemConformingToTypeIdentifier(UTType.plainText.identifier),
+               let text = try? await provider.loadItem(forTypeIdentifier: UTType.plainText.identifier) as? String {
+                return SharePayload(rawType: .text, url: nil, text: text, imageFilename: nil, imageData: nil)
+            }
         }
         return nil
     }

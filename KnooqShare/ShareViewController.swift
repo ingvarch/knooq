@@ -1,55 +1,48 @@
-import UIKit
+import Social
 import UniformTypeIdentifiers
-import SwiftData
 import KnooqKit
 
-/// Raw capture only: read the shared payload, persist it as `.pending`, close.
-/// No AI, no network, no OCR here — that work runs in the main app (extension memory budget).
-final class ShareViewController: UIViewController {
+/// Native share card. Raw capture only: enqueue the payload to the App Group file queue and close.
+/// No SwiftData, CloudKit, network, or OCR here — that heavy work runs in the main app.
+final class ShareViewController: SLComposeServiceViewController {
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        Task { await handleShare() }
-    }
+    override func isContentValid() -> Bool { true }
 
-    @MainActor
-    private func handleShare() async {
-        defer { extensionContext?.completeRequest(returningItems: nil) }
+    override func configurationItems() -> [Any]! { [] }
 
-        let attachments = (extensionContext?.inputItems as? [NSExtensionItem])?
+    override func didSelectPost() {
+        let providers = (extensionContext?.inputItems as? [NSExtensionItem])?
             .compactMap(\.attachments).flatMap { $0 } ?? []
-        guard !attachments.isEmpty else { return }
 
-        do {
-            let context = try KnooqStore.container().mainContext
-            for provider in attachments {
-                if let item = try await makeItem(from: provider) {
-                    context.insert(item)
+        Task {
+            let queue = CaptureQueue.appGroup()
+            for provider in providers {
+                if let capture = try? await makeCapture(from: provider) {
+                    try? queue.enqueue(capture)
                 }
             }
-            try context.save()
-        } catch {
-            // Nothing to surface in the extension; the item simply isn't captured.
+            extensionContext?.completeRequest(returningItems: nil)
         }
     }
 
     /// First matching type wins: URL, then image, then plain text.
-    private func makeItem(from provider: NSItemProvider) async throws -> SavedItem? {
+    private func makeCapture(from provider: NSItemProvider) async throws -> PendingCapture? {
+        let now = Date()
+
         if provider.hasItemConformingToTypeIdentifier(UTType.url.identifier),
            let url = try await provider.loadItem(forTypeIdentifier: UTType.url.identifier) as? URL {
-            return SavedItem(rawType: .url, rawURL: url)
+            return PendingCapture(rawType: .url, urlString: url.absoluteString, text: nil, imageFilename: nil, createdAt: now)
         }
 
         if provider.hasItemConformingToTypeIdentifier(UTType.image.identifier) {
             let data = try await loadData(provider, UTType.image.identifier)
             let filename = try ImageStore.appGroup().save(data)
-            return SavedItem(rawType: .image, imageFilename: filename)
+            return PendingCapture(rawType: .image, urlString: nil, text: nil, imageFilename: filename, createdAt: now)
         }
 
         if provider.hasItemConformingToTypeIdentifier(UTType.plainText.identifier),
            let text = try await provider.loadItem(forTypeIdentifier: UTType.plainText.identifier) as? String {
-            return SavedItem(rawType: .text, rawText: text)
+            return PendingCapture(rawType: .text, urlString: nil, text: text, imageFilename: nil, createdAt: now)
         }
 
         return nil

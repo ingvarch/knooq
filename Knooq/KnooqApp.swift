@@ -30,9 +30,28 @@ struct KnooqApp: App {
 
     private func onAppLaunch() async {
         _ = await UNNotifier.requestAuthorization()
+        importCaptures()
         await processPendingItems()
         await nudgeScheduler.runNudgeCheck()
         nudgeScheduler.scheduleBackgroundTask()
+    }
+
+    /// Drain raw captures written by the Share Extension into SwiftData as .pending items.
+    @MainActor
+    private func importCaptures() {
+        let captures = (try? CaptureQueue.appGroup().drain()) ?? []
+        guard !captures.isEmpty else { return }
+        let context = container.mainContext
+        for capture in captures {
+            context.insert(SavedItem(
+                createdAt: capture.createdAt,
+                rawType: capture.rawType,
+                rawURL: capture.urlString.flatMap(URL.init(string:)),
+                rawText: capture.text,
+                imageFilename: capture.imageFilename
+            ))
+        }
+        try? context.save()
     }
 
     @MainActor

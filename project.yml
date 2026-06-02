@@ -37,6 +37,7 @@ targets:
     platform: iOS
     sources:
       - Knooq
+      - Shared
     dependencies:
       - target: KnooqKit
         embed: true
@@ -77,6 +78,7 @@ targets:
     platform: iOS
     sources:
       - KnooqShare
+      - Shared
     dependencies:
       - target: KnooqKit
         embed: false

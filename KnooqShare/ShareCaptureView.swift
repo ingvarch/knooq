@@ -1,5 +1,4 @@
 import SwiftUI
-@preconcurrency import LinkPresentation
 import KnooqKit
 
 /// Full-screen capture screen: Close / Save, a "SAVE TO" category picker (push), and the
@@ -117,20 +116,4 @@ struct CategoryPickerView: View {
             }
         }
     }
-}
-
-/// Rich link preview via LinkPresentation.
-struct LinkPreview: UIViewRepresentable {
-    let url: URL
-
-    func makeUIView(context: Context) -> LPLinkView {
-        let view = LPLinkView(url: url)
-        LPMetadataProvider().startFetchingMetadata(for: url) { metadata, _ in
-            guard let metadata else { return }
-            DispatchQueue.main.async { view.metadata = metadata }
-        }
-        return view
-    }
-
-    func updateUIView(_ uiView: LPLinkView, context: Context) {}
 }

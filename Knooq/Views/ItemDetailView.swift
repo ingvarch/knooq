@@ -26,6 +26,8 @@ struct ItemDetailView: View {
                     section("Description") { Text(description).font(.body) }
                 }
                 if let url = item.rawURL {
+                    LinkPreview(url: url)
+                        .frame(height: 120)
                     Link(destination: url) {
                         Label("Open Original", systemImage: "safari").frame(maxWidth: .infinity)
                     }

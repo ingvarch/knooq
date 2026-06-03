@@ -8,6 +8,9 @@ struct InboxView: View {
            sort: \SavedItem.createdAt, order: .reverse)
     private var items: [SavedItem]
 
+    /// Pull-to-refresh action — re-imports and retries failed items (Needs attention).
+    var onRefresh: () async -> Void = {}
+
     @State private var showSettings = false
     @State private var showNewFolder = false
     @State private var newFolderName = ""
@@ -53,6 +56,7 @@ struct InboxView: View {
                 }
             }
             .navigationTitle("Inbox")
+            .refreshable { await onRefresh() }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button { showNewFolder = true } label: { Image(systemName: "folder.badge.plus") }

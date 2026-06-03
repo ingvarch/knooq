@@ -35,7 +35,7 @@ struct ContentView: View {
         if !services.hasOnboarded {
             OnboardingView { codes in services.completeOnboarding(languageCodes: codes) }
         } else if services.isModelReady {
-            InboxView()
+            InboxView(onRefresh: { await services.refresh() })
         } else {
             AvailabilityGateView(message: services.modelMessage)
         }

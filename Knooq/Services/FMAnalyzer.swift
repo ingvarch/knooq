@@ -22,8 +22,12 @@ struct FMItemAnalysis {
 final class FMAnalyzer: Analyzer {
     enum FMError: LocalizedError {
         case modelUnavailable(SystemLanguageModel.Availability)
+        case unsafeContent
 
         var errorDescription: String? {
+            if case .unsafeContent = self {
+                return "Unsafe content detected by Apple Intelligence"
+            }
             guard case .modelUnavailable(let availability) = self else { return nil }
             switch availability {
             case .available:
@@ -61,7 +65,14 @@ final class FMAnalyzer: Analyzer {
 
         let allowed = CategoryStore().allowedForAI()
         let session = LanguageModelSession(instructions: instructions(allowed: allowed))
-        let response = try await session.respond(to: text, generating: FMItemAnalysis.self)
+
+        let response: LanguageModelSession.Response<FMItemAnalysis>
+        do {
+            response = try await session.respond(to: text, generating: FMItemAnalysis.self)
+        } catch let error as LanguageModelSession.GenerationError {
+            if case .guardrailViolation = error { throw FMError.unsafeContent }
+            throw error
+        }
         let fm = response.content
         knooqLog("FMAnalyzer: got category=\(fm.category) tags=\(fm.tags)")
 

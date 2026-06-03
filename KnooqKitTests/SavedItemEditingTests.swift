@@ -42,6 +42,39 @@ import Testing
         #expect(i.openedAt != nil)
     }
 
+    @Test func assignFolderRescuesFailedItem() {
+        let i = item()
+        i.status = .failed
+        i.failureReason = "boom"
+        i.assignFolder("Work")
+        #expect(i.category == "Work")
+        #expect(i.userCategorized == true)
+        #expect(i.status == .processed)
+        #expect(i.failureReason == nil)
+    }
+
+    @Test func assignFolderKeepsProcessedItemProcessed() {
+        let i = item()
+        i.status = .processed
+        i.assignFolder("Work")
+        #expect(i.status == .processed)
+        #expect(i.category == "Work")
+    }
+
+    @Test func setNoteStoresAndStamps() {
+        let i = item()
+        i.setNote("  hello ")
+        #expect(i.note == "hello")
+        #expect(i.openedAt != nil)
+    }
+
+    @Test func setNoteEmptyClears() {
+        let i = item()
+        i.note = "x"
+        i.setNote("   ")
+        #expect(i.note == nil)
+    }
+
     @Test func toggleArchiveFlips() {
         let i = item()
         #expect(i.isArchived == false)

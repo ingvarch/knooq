@@ -3,7 +3,7 @@ import SwiftData
 import KnooqKit
 
 private enum DetailEditor: String, Identifiable {
-    case category, tags
+    case category, tags, description
     var id: String { rawValue }
 }
 
@@ -50,6 +50,7 @@ struct ItemDetailView: View {
             switch which {
             case .category: CategoryEditorSheet(item: item)
             case .tags: TagsEditorSheet(item: item)
+            case .description: DescriptionEditorSheet(item: item)
             }
         }
         .confirmationDialog("Delete this item?", isPresented: $confirmingDelete, titleVisibility: .visible) {
@@ -75,6 +76,7 @@ struct ItemDetailView: View {
         Menu {
             Button { editor = .category } label: { Label("Change Folder", systemImage: "folder") }
             Button { editor = .tags } label: { Label("Edit Tags", systemImage: "number") }
+            Button { editor = .description } label: { Label("Edit Description", systemImage: "text.alignleft") }
             Divider()
             Button {
                 item.toggleArchive()
@@ -127,7 +129,7 @@ struct CategoryEditorSheet: View {
             List {
                 ForEach(options, id: \.self) { name in
                     Button {
-                        item.setCategory(name)
+                        item.assignFolder(name)
                         dismiss()
                     } label: {
                         HStack {
@@ -141,6 +143,34 @@ struct CategoryEditorSheet: View {
             .navigationTitle("Folder")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
+        }
+        .presentationDetents([.medium, .large])
+    }
+}
+
+/// Bottom sheet to edit the item's description (the user note shown above the AI summary).
+struct DescriptionEditorSheet: View {
+    @Bindable var item: SavedItem
+    @Environment(\.dismiss) private var dismiss
+    @State private var text: String
+
+    init(item: SavedItem) {
+        self.item = item
+        _text = State(initialValue: item.note ?? "")
+    }
+
+    var body: some View {
+        NavigationStack {
+            TextEditor(text: $text)
+                .padding()
+                .navigationTitle("Description")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Save") { item.setNote(text); dismiss() }
+                    }
+                }
         }
         .presentationDetents([.medium, .large])
     }

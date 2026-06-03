@@ -25,4 +25,21 @@ extension SavedItem {
     public func toggleArchive() {
         isArchived.toggle()
     }
+
+    /// Manually file the item into a folder. Marks it user-categorized, and if it had failed,
+    /// rescues it to .processed (clears the error) so it leaves Needs attention for the folder.
+    public func assignFolder(_ name: String) {
+        setCategory(name)
+        userCategorized = true
+        if status == .failed {
+            status = .processed
+            failureReason = nil
+        }
+    }
+
+    public func setNote(_ text: String) {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        note = trimmed.isEmpty ? nil : trimmed
+        openedAt = .now
+    }
 }

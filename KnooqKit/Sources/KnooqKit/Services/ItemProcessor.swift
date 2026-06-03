@@ -49,7 +49,7 @@ public final class ItemProcessor: Sendable {
             item.failureReason = nil
             knooqLog("ItemProcessor: processed -> \(item.category ?? "?") \(item.tags)")
         } catch {
-            fail(item, "AI analysis failed: \(Self.message(error))")
+            fail(item, Self.message(error))
         }
     }
 

@@ -12,7 +12,7 @@ public struct NudgeSettings {
     public static let defaultStaleDays = 7
     public static let defaultMinGroupSize = 3
 
-    public init(defaults: UserDefaults = .standard) {
+    public init(defaults: UserDefaults = KnooqShared.defaults) {
         self.defaults = defaults
     }
 

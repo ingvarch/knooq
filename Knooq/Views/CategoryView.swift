@@ -5,11 +5,15 @@ import KnooqKit
 /// Navigation target for a folder: a named category or the special "All" view.
 enum FolderRoute: Hashable {
     case all
+    case processing
+    case needsAttention
     case category(String)
 
     var title: String {
         switch self {
         case .all: "All"
+        case .processing: "Processing"
+        case .needsAttention: "Needs attention"
         case .category(let name): name
         }
     }
@@ -26,10 +30,11 @@ struct CategoryView: View {
 
     private var items: [SavedItem] {
         all.filter { item in
-            guard item.status == .processed else { return false }
             switch route {
-            case .all: return true
-            case .category(let name): return item.category == name
+            case .all: return item.status == .processed
+            case .processing: return item.status == .pending
+            case .needsAttention: return item.status == .failed
+            case .category(let name): return item.status == .processed && item.category == name
             }
         }
     }

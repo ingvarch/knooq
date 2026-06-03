@@ -9,7 +9,7 @@ public struct OnboardingStore {
         static let languages = "knooq.onboarding.languages"
     }
 
-    public init(defaults: UserDefaults = .standard) {
+    public init(defaults: UserDefaults = KnooqShared.defaults) {
         self.defaults = defaults
     }
 

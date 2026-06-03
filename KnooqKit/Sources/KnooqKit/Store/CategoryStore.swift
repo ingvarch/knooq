@@ -6,7 +6,7 @@ public struct CategoryStore {
     private let defaults: UserDefaults
     private static let key = "knooq.categories.custom"
 
-    public init(defaults: UserDefaults = .standard) {
+    public init(defaults: UserDefaults = KnooqShared.defaults) {
         self.defaults = defaults
     }
 

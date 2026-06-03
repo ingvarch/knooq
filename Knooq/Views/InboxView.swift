@@ -28,33 +28,9 @@ struct InboxView: View {
     var body: some View {
         NavigationStack {
             List {
-                Section("Processing") {
-                    if processing.isEmpty {
-                        Text("Nothing processing right now")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    } else {
-                        ForEach(processing) { item in
-                            NavigationLink(value: item) { ItemCardView(item: item) }
-                                .swipeActions(edge: .trailing) { deleteButton(item) }
-                        }
-                    }
-                }
-
-                Section("Needs attention") {
-                    if needsAttention.isEmpty {
-                        Text("No issues")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    } else {
-                        ForEach(needsAttention) { item in
-                            NavigationLink(value: item) { ItemCardView(item: item) }
-                                .swipeActions(edge: .trailing) {
-                                    deleteButton(item)
-                                    archiveButton(item)
-                                }
-                        }
-                    }
+                Section {
+                    statusRow(.processing, "Processing", "arrow.triangle.2.circlepath", count: processing.count)
+                    statusRow(.needsAttention, "Needs attention", "exclamationmark.triangle", count: needsAttention.count)
                 }
 
                 Section("Folders") {
@@ -109,17 +85,18 @@ struct InboxView: View {
         newFolderName = ""
     }
 
-    private func deleteButton(_ item: SavedItem) -> some View {
-        Button(role: .destructive) { context.delete(item) } label: {
-            Label("Delete", systemImage: "trash")
+    private func statusRow(_ route: FolderRoute, _ title: String, _ symbol: String, count: Int) -> some View {
+        NavigationLink(value: route) {
+            Label {
+                HStack {
+                    Text(title)
+                    Spacer()
+                    Text("\(count)").foregroundStyle(.secondary)
+                }
+            } icon: {
+                Image(systemName: symbol)
+            }
         }
-    }
-
-    private func archiveButton(_ item: SavedItem) -> some View {
-        Button { item.isArchived = true } label: {
-            Label("Archive", systemImage: "archivebox")
-        }
-        .tint(.blue)
     }
 }
 

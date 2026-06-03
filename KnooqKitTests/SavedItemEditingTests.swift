@@ -37,8 +37,8 @@ import Testing
 
     @Test func setCategoryStamps() {
         let i = item()
-        i.setCategory(.tool)
-        #expect(i.category == .tool)
+        i.setCategory("Tool")
+        #expect(i.category == "Tool")
         #expect(i.openedAt != nil)
     }
 

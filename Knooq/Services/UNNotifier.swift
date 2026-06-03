@@ -5,13 +5,13 @@ import KnooqKit
 final class UNNotifier: Notifier {
     func schedule(_ notification: NudgeNotification) async throws {
         let content = UNMutableNotificationContent()
-        content.title = "\(notification.category.rawValue) items need attention"
+        content.title = "\(notification.category) items need attention"
         content.body = notification.message
         content.sound = .default
-        content.userInfo = ["category": notification.category.rawValue]
+        content.userInfo = ["category": notification.category]
 
         let request = UNNotificationRequest(
-            identifier: "nudge-\(notification.category.rawValue)",
+            identifier: "nudge-\(notification.category)",
             content: content,
             trigger: nil
         )

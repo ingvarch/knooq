@@ -44,7 +44,7 @@ final class ShareViewController: UIViewController {
         extensionContext?.cancelRequest(withError: NSError(domain: "Knooq", code: 0))
     }
 
-    private func save(_ payload: SharePayload, category: ItemCategory?, note: String) {
+    private func save(_ payload: SharePayload, category: String?, note: String) {
         let trimmed = note.trimmingCharacters(in: .whitespacesAndNewlines)
         let now = Date()
         let capture: PendingCapture

@@ -5,22 +5,18 @@ import Foundation
 @Suite struct CategoryTests {
 
     @Test func validatedKnownReturnsMatch() {
-        #expect(ItemCategory.validated("Article") == .article)
-        #expect(ItemCategory.validated("Tool") == .tool)
+        let allowed = Categories.suggestions + ["Work"]
+        #expect(Categories.validated("Article", allowed: allowed) == "Article")
+        #expect(Categories.validated("Work", allowed: allowed) == "Work")
+    }
+
+    @Test func validatedIsCaseInsensitive() {
+        #expect(Categories.validated("article", allowed: Categories.suggestions) == "Article")
     }
 
     @Test func validatedUnknownFallsBackToOther() {
-        #expect(ItemCategory.validated("Unknown") == .other)
-        #expect(ItemCategory.validated("") == .other)
-        #expect(ItemCategory.validated("article") == .other) // case-sensitive raw value
-    }
-
-    @Test func allCasesCoverFixedSet() {
-        #expect(ItemCategory.allCases.count == 8)
-        #expect(ItemCategory.allCases.map(\.rawValue) == [
-            "Article", "Video", "Recipe", "Purchase",
-            "Travel", "Idea", "Tool", "Other",
-        ])
+        #expect(Categories.validated("Nonsense", allowed: Categories.suggestions) == "Other")
+        #expect(Categories.validated("", allowed: Categories.suggestions) == "Other")
     }
 }
 
@@ -57,12 +53,12 @@ import Foundation
 
     @Test func storesAnalysisResults() {
         let item = SavedItem(rawType: .url, rawURL: URL(string: "https://example.com"))
-        item.category = .article
+        item.category = "Article"
         item.tags = ["swift", "ios"]
         item.title = "Title"
         item.summary = "Summary."
         item.status = .processed
-        #expect(item.category == .article)
+        #expect(item.category == "Article")
         #expect(item.tags == ["swift", "ios"])
         #expect(item.status == .processed)
     }

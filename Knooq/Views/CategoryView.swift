@@ -2,9 +2,22 @@ import SwiftUI
 import SwiftData
 import KnooqKit
 
-/// A category "folder": its processed items grouped by day, newest first.
+/// Navigation target for a folder: a named category or the special "All" view.
+enum FolderRoute: Hashable {
+    case all
+    case category(String)
+
+    var title: String {
+        switch self {
+        case .all: "All"
+        case .category(let name): name
+        }
+    }
+}
+
+/// A folder view: processed items (all, or one category) grouped by day, newest first.
 struct CategoryView: View {
-    let category: ItemCategory
+    let route: FolderRoute
 
     @Environment(\.modelContext) private var context
     @Query(filter: #Predicate<SavedItem> { !$0.isArchived },
@@ -12,7 +25,13 @@ struct CategoryView: View {
     private var all: [SavedItem]
 
     private var items: [SavedItem] {
-        all.filter { $0.status == .processed && $0.category == category }
+        all.filter { item in
+            guard item.status == .processed else { return false }
+            switch route {
+            case .all: return true
+            case .category(let name): return item.category == name
+            }
+        }
     }
 
     private var groupedByDay: [(day: Date, items: [SavedItem])] {
@@ -41,12 +60,12 @@ struct CategoryView: View {
                 }
             }
         }
-        .navigationTitle(category.rawValue)
+        .navigationTitle(route.title)
         .navigationBarTitleDisplayMode(.inline)
         .overlay {
             if items.isEmpty {
-                ContentUnavailableView("Empty", systemImage: category.symbol,
-                                       description: Text("Nothing in \(category.rawValue) yet."))
+                ContentUnavailableView("Empty", systemImage: "folder",
+                                       description: Text("Nothing here yet."))
             }
         }
     }

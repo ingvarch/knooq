@@ -9,16 +9,19 @@ struct InboxView: View {
     private var items: [SavedItem]
 
     @State private var showSettings = false
+    @State private var showNewFolder = false
+    @State private var newFolderName = ""
+    @State private var customFolders: [String] = CategoryStore().customFolders
 
     private var processing: [SavedItem] { items.filter { $0.status == .pending } }
     private var needsAttention: [SavedItem] { items.filter { $0.status == .failed } }
     private var processed: [SavedItem] { items.filter { $0.status == .processed } }
 
-    /// Categories that currently contain at least one processed item, in canonical order.
-    private var folders: [(category: ItemCategory, count: Int)] {
-        ItemCategory.allCases.compactMap { category in
-            let count = processed.filter { $0.category == category }.count
-            return count > 0 ? (category, count) : nil
+    /// Folder names to show (Notes + custom + any used category), each with its processed count.
+    private var folders: [(name: String, count: Int)] {
+        let used = Set(processed.compactMap(\.category))
+        return Folders.visible(custom: customFolders, used: used).map { name in
+            (name, processed.filter { $0.category == name }.count)
         }
     }
 
@@ -54,19 +57,20 @@ struct InboxView: View {
                     }
                 }
 
-                if !folders.isEmpty {
-                    Section("Folders") {
-                        ForEach(folders, id: \.category) { folder in
-                            NavigationLink(value: folder.category) {
-                                Label {
-                                    HStack {
-                                        Text(folder.category.rawValue)
-                                        Spacer()
-                                        Text("\(folder.count)").foregroundStyle(.secondary)
-                                    }
-                                } icon: {
-                                    Image(systemName: folder.category.symbol)
+                Section("Folders") {
+                    NavigationLink(value: FolderRoute.all) {
+                        Label("All", systemImage: "tray.full")
+                    }
+                    ForEach(folders, id: \.name) { folder in
+                        NavigationLink(value: FolderRoute.category(folder.name)) {
+                            Label {
+                                HStack {
+                                    Text(folder.name)
+                                    Spacer()
+                                    Text("\(folder.count)").foregroundStyle(.secondary)
                                 }
+                            } icon: {
+                                Image(systemName: categorySymbol(folder.name))
                             }
                         }
                     }
@@ -75,17 +79,34 @@ struct InboxView: View {
             .navigationTitle("Inbox")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
+                    Button { showNewFolder = true } label: { Image(systemName: "folder.badge.plus") }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
                     Button { showSettings = true } label: { Image(systemName: "gearshape") }
                 }
             }
-            .navigationDestination(for: ItemCategory.self) { category in
-                CategoryView(category: category)
+            .navigationDestination(for: FolderRoute.self) { route in
+                CategoryView(route: route)
             }
             .navigationDestination(for: SavedItem.self) { item in
                 ItemDetailView(item: item)
             }
             .sheet(isPresented: $showSettings) { SettingsView() }
+            .alert("New folder", isPresented: $showNewFolder) {
+                TextField("Folder name", text: $newFolderName)
+                Button("Cancel", role: .cancel) { newFolderName = "" }
+                Button("Add") { addFolder() }
+            } message: {
+                Text("Create a folder you can move items into.")
+            }
         }
+    }
+
+    private func addFolder() {
+        var store = CategoryStore()
+        store.add(newFolderName)
+        customFolders = store.customFolders
+        newFolderName = ""
     }
 
     private func deleteButton(_ item: SavedItem) -> some View {

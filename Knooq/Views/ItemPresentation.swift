@@ -29,18 +29,19 @@ extension ItemStatus {
     }
 }
 
-extension ItemCategory {
-    var symbol: String {
-        switch self {
-        case .article: "doc.text"
-        case .video: "play.rectangle"
-        case .recipe: "fork.knife"
-        case .purchase: "cart"
-        case .travel: "airplane"
-        case .idea: "lightbulb"
-        case .tool: "wrench.and.screwdriver"
-        case .other: "tray"
-        }
+/// SF Symbol for a folder name (built-in suggestions get themed icons; Notes + custom get defaults).
+func categorySymbol(_ name: String) -> String {
+    switch name {
+    case "Article": "doc.text"
+    case "Video": "play.rectangle"
+    case "Recipe": "fork.knife"
+    case "Purchase": "cart"
+    case "Travel": "airplane"
+    case "Idea": "lightbulb"
+    case "Tool": "wrench.and.screwdriver"
+    case Categories.other: "tray"
+    case Categories.notes: "note.text"
+    default: "folder"
     }
 }
 

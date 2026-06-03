@@ -5,7 +5,7 @@ import Testing
 
     private func base() -> StubAnalyzer {
         let a = StubAnalyzer()
-        a.result = ItemAnalysis(category: .article, tags: ["tag"], title: "Title", summary: "Summary")
+        a.result = ItemAnalysis(category: "Article", tags: ["tag"], title: "Title", summary: "Summary")
         return a
     }
 
@@ -39,7 +39,7 @@ import Testing
         #expect(out.title == "ru:Title")
         #expect(out.summary == "ru:Summary")
         #expect(out.tags == ["ru:tag"])
-        #expect(out.category == .article)  // category never translated
+        #expect(out.category == "Article")  // category never translated
     }
 
     @Test func fallsBackToBaseWhenTranslationThrows() async throws {

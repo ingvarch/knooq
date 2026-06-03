@@ -13,7 +13,7 @@ import Foundation
     }
 
     private func item(
-        _ category: ItemCategory?,
+        _ category: String?,
         status: ItemStatus = .processed,
         archived: Bool = false,
         lastNudged: Date? = nil
@@ -27,39 +27,39 @@ import Foundation
     }
 
     @Test func threeNeverNudgedSameCategoryIsCandidate() {
-        let items = [item(.idea), item(.idea), item(.idea)]
+        let items = [item("Idea"), item("Idea"), item("Idea")]
         let candidates = engine().findCandidates(items)
         #expect(candidates.count == 1)
-        #expect(candidates.first?.category == .idea)
+        #expect(candidates.first?.category == "Idea")
         #expect(candidates.first?.items.count == 3)
     }
 
     @Test func twoItemsBelowThreshold() {
-        let candidates = engine().findCandidates([item(.idea), item(.idea)])
+        let candidates = engine().findCandidates([item("Idea"), item("Idea")])
         #expect(candidates.isEmpty)
     }
 
     @Test func nudgedSixDaysAgoExcluded() {
-        let items = [item(.idea, lastNudged: daysAgo(6)),
-                     item(.idea, lastNudged: daysAgo(6)),
-                     item(.idea, lastNudged: daysAgo(6))]
+        let items = [item("Idea", lastNudged: daysAgo(6)),
+                     item("Idea", lastNudged: daysAgo(6)),
+                     item("Idea", lastNudged: daysAgo(6))]
         #expect(engine().findCandidates(items).isEmpty)
     }
 
     @Test func nudgedEightDaysAgoIsCandidate() {
-        let items = [item(.idea, lastNudged: daysAgo(8)),
-                     item(.idea, lastNudged: daysAgo(8)),
-                     item(.idea, lastNudged: daysAgo(8))]
+        let items = [item("Idea", lastNudged: daysAgo(8)),
+                     item("Idea", lastNudged: daysAgo(8)),
+                     item("Idea", lastNudged: daysAgo(8))]
         #expect(engine().findCandidates(items).count == 1)
     }
 
     @Test func archivedExcluded() {
-        let items = [item(.idea), item(.idea), item(.idea, archived: true)]
+        let items = [item("Idea"), item("Idea"), item("Idea", archived: true)]
         #expect(engine().findCandidates(items).isEmpty)  // only 2 eligible
     }
 
     @Test func pendingAndFailedExcluded() {
-        let items = [item(.idea), item(.idea, status: .pending), item(.idea, status: .failed)]
+        let items = [item("Idea"), item("Idea", status: .pending), item("Idea", status: .failed)]
         #expect(engine().findCandidates(items).isEmpty)
     }
 
@@ -69,28 +69,28 @@ import Foundation
     }
 
     @Test func largestGroupSortedFirst() {
-        let items = [item(.idea), item(.idea), item(.idea),
-                     item(.tool), item(.tool), item(.tool), item(.tool)]
+        let items = [item("Idea"), item("Idea"), item("Idea"),
+                     item("Tool"), item("Tool"), item("Tool"), item("Tool")]
         let candidates = engine().findCandidates(items)
         #expect(candidates.count == 2)
-        #expect(candidates.first?.category == .tool)  // 4 > 3
+        #expect(candidates.first?.category == "Tool")  // 4 > 3
     }
 
     @Test func antiSpamCapSelectsOne() {
         let groups = (0..<5).map {
-            NudgeCandidate(category: ItemCategory.allCases[$0], items: [item(.idea), item(.idea), item(.idea)])
+            NudgeCandidate(category: Categories.suggestions[$0], items: [item("Idea"), item("Idea"), item("Idea")])
         }
         #expect(engine().selectForNotification(groups).count == 1)
     }
 
     @Test func stampNudgedSetsClockNow() {
-        let items = [item(.idea), item(.idea)]
+        let items = [item("Idea"), item("Idea")]
         engine().stampNudged(items)
         #expect(items.allSatisfy { $0.lastNudgedAt == now })
     }
 
     @Test func fallbackTextMentionsCountAndCategory() {
-        let text = NudgeTextGenerator.fallback(category: .recipe, count: 3)
+        let text = NudgeTextGenerator.fallback(category: "Recipe", count: 3)
         #expect(text.contains("3"))
         #expect(text.contains("recipe"))
     }

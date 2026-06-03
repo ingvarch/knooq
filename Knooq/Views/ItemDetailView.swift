@@ -12,8 +12,15 @@ struct ItemDetailView: View {
     @State private var confirmingDelete = false
 
     /// Category edits route through `setCategory` so `openedAt` stamping stays in one place (DRY).
-    private var categoryBinding: Binding<ItemCategory?> {
+    private var categoryBinding: Binding<String?> {
         Binding(get: { item.category }, set: { item.setCategory($0) })
+    }
+
+    /// Folders the user can move this item into: Notes + their custom folders + built-in suggestions.
+    private var availableCategories: [String] {
+        var result = [Categories.notes] + CategoryStore().customFolders
+        for name in Categories.suggestions where !result.contains(name) { result.append(name) }
+        return result
     }
 
     var body: some View {
@@ -62,9 +69,9 @@ struct ItemDetailView: View {
     private var categorySection: some View {
         section("Category") {
             Picker("Category", selection: categoryBinding) {
-                Text("None").tag(ItemCategory?.none)
-                ForEach(ItemCategory.allCases, id: \.self) { category in
-                    Text(category.rawValue).tag(ItemCategory?.some(category))
+                Text("None").tag(String?.none)
+                ForEach(availableCategories, id: \.self) { name in
+                    Text(name).tag(String?.some(name))
                 }
             }
             .pickerStyle(.menu)

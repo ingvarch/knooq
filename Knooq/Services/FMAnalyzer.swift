@@ -5,7 +5,7 @@ import KnooqKit
 /// Structured output schema for Guided Generation.
 @Generable
 struct FMItemAnalysis {
-    @Guide(description: "One of: Article, Video, Recipe, Purchase, Travel, Idea, Tool, Other")
+    @Guide(description: "The single best-fitting folder name for this content, taken from the list in the instructions")
     var category: String
 
     @Guide(description: "Exactly 3 short lowercase tags describing the content")
@@ -40,14 +40,17 @@ final class FMAnalyzer: Analyzer {
         }
     }
 
-    private let instructions = """
-    You are a content categorization assistant. Analyze the provided text and:
-    1. Categorize into exactly one of: Article, Video, Recipe, Purchase, Travel, Idea, Tool, Other.
-    2. Generate exactly 3 relevant lowercase tags.
-    3. Create a concise, descriptive title.
-    4. Write a detailed tl;dr summary of 3-5 sentences covering the main points and key takeaways.
-    Focus on the main topic, intent, and the most useful details of the content.
-    """
+    private func instructions(allowed: [String]) -> String {
+        """
+        You are a content categorization assistant. Analyze the provided text and:
+        1. Choose the single best-fitting folder for this content from this list: \(allowed.joined(separator: ", ")).
+           Prefer a folder the user already has. If nothing fits well, use \(Categories.other).
+        2. Generate exactly 3 relevant lowercase tags.
+        3. Create a concise, descriptive title.
+        4. Write a detailed tl;dr summary of 3-5 sentences covering the main points and key takeaways.
+        Focus on the main topic, intent, and the most useful details of the content.
+        """
+    }
 
     func analyze(_ text: String) async throws -> ItemAnalysis {
         let availability = SystemLanguageModel.default.availability
@@ -56,13 +59,15 @@ final class FMAnalyzer: Analyzer {
             throw FMError.modelUnavailable(availability)
         }
 
-        let session = LanguageModelSession(instructions: instructions)
+        let allowed = CategoryStore().allowedForAI()
+        let session = LanguageModelSession(instructions: instructions(allowed: allowed))
         let response = try await session.respond(to: text, generating: FMItemAnalysis.self)
         let fm = response.content
         knooqLog("FMAnalyzer: got category=\(fm.category) tags=\(fm.tags)")
 
         return ItemAnalysis.validated(
             rawCategory: fm.category,
+            allowed: allowed,
             rawTags: fm.tags,
             title: fm.title,
             summary: fm.summary

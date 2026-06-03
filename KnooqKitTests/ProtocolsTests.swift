@@ -6,9 +6,9 @@ import Foundation
 
     @Test func returnsConfiguredResult() async throws {
         let stub = StubAnalyzer()
-        stub.result = ItemAnalysis(category: .recipe, tags: ["a"], title: "T", summary: "S")
+        stub.result = ItemAnalysis(category: "Recipe", tags: ["a"], title: "T", summary: "S")
         let out = try await stub.analyze("text")
-        #expect(out.category == .recipe)
+        #expect(out.category == "Recipe")
         #expect(out.title == "T")
         #expect(stub.receivedText == "text")
     }
@@ -51,10 +51,10 @@ import Foundation
 
     @Test func recordsScheduledAndCancelled() async throws {
         let notifier = StubNotifier()
-        try await notifier.schedule(NudgeNotification(category: .idea, itemCount: 3, message: "m"))
+        try await notifier.schedule(NudgeNotification(category: "Idea", itemCount: 3, message: "m"))
         await notifier.cancelAll()
         #expect(notifier.scheduled.count == 1)
-        #expect(notifier.scheduled.first?.category == .idea)
+        #expect(notifier.scheduled.first?.category == "Idea")
         #expect(notifier.cancelledCount == 1)
     }
 }

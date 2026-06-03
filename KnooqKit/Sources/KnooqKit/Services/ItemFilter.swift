@@ -3,7 +3,7 @@ import Foundation
 /// Pure category/tag filtering, shared by the Inbox and Categories screens (DRY).
 @MainActor
 public enum ItemFilter {
-    public static func apply(_ items: [SavedItem], category: ItemCategory?, tag: String?) -> [SavedItem] {
+    public static func apply(_ items: [SavedItem], category: String?, tag: String?) -> [SavedItem] {
         items.filter { item in
             if let category, item.category != category { return false }
             if let tag, !item.tags.contains(tag) { return false }

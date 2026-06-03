@@ -7,11 +7,11 @@ public struct PendingCapture: Codable, Sendable, Equatable {
     public let text: String?
     public let imageFilename: String?
     public let createdAt: Date
-    public let note: String?              // optional user text from the share card
-    public let category: ItemCategory?    // optional user-chosen category (nil = let FM decide)
+    public let note: String?       // optional user text from the share card
+    public let category: String?   // optional user-chosen folder (nil = let FM decide)
 
     public init(rawType: RawType, urlString: String?, text: String?, imageFilename: String?,
-                createdAt: Date, note: String? = nil, category: ItemCategory? = nil) {
+                createdAt: Date, note: String? = nil, category: String? = nil) {
         self.rawType = rawType
         self.urlString = urlString
         self.text = text

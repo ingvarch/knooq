@@ -2,10 +2,10 @@ import Foundation
 
 /// A category group worth nudging. Holds the @Model items, so it is used on the main actor.
 public struct NudgeCandidate {
-    public let category: ItemCategory
+    public let category: String
     public let items: [SavedItem]
 
-    public init(category: ItemCategory, items: [SavedItem]) {
+    public init(category: String, items: [SavedItem]) {
         self.category = category
         self.items = items
     }
@@ -63,7 +63,7 @@ public final class NudgeEngine: Sendable {
 
 /// Deterministic fallback text when FM is unavailable.
 public enum NudgeTextGenerator {
-    public static func fallback(category: ItemCategory, count: Int) -> String {
-        "You have \(count) \(category.rawValue.lowercased()) items waiting for your attention."
+    public static func fallback(category: String, count: Int) -> String {
+        "You have \(count) \(category.lowercased()) items waiting for your attention."
     }
 }

@@ -12,7 +12,7 @@ final class StubAnalyzer: Analyzer, @unchecked Sendable {
     func analyze(_ text: String) async throws -> ItemAnalysis {
         receivedText = text
         if let error { throw error }
-        return result ?? ItemAnalysis(category: .other, tags: [], title: "Stub", summary: "Stub")
+        return result ?? ItemAnalysis(category: "Other", tags: [], title: "Stub", summary: "Stub")
     }
 }
 

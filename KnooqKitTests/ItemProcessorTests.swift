@@ -8,7 +8,7 @@ import Foundation
     private func makeProcessor(
         extractedText: String = String(repeating: "x", count: 50),
         extractorError: Error? = nil,
-        analysis: ItemAnalysis = ItemAnalysis(category: .article, tags: ["t"], title: "Title", summary: "Sum"),
+        analysis: ItemAnalysis = ItemAnalysis(category: "Article", tags: ["t"], title: "Title", summary: "Sum"),
         analyzerError: Error? = nil
     ) -> (ItemProcessor, StubTextExtractor, StubAnalyzer) {
         let extractor = StubTextExtractor()
@@ -25,7 +25,7 @@ import Foundation
         let item = SavedItem(rawType: .text, rawText: "raw")
         await proc.process(item)
         #expect(item.status == .processed)
-        #expect(item.category == .article)
+        #expect(item.category == "Article")
         #expect(item.tags == ["t"])
         #expect(item.title == "Title")
         #expect(item.summary == "Sum")

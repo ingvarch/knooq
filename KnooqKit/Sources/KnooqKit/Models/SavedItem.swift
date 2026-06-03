@@ -19,8 +19,8 @@ public final class SavedItem {
     // User-entered note from the share card. FM never overwrites this; it appends to `summary`.
     public var note: String?
 
-    // FM analysis results (written by the main app).
-    public var category: ItemCategory?
+    // FM analysis results (written by the main app). Category is a folder name (string).
+    public var category: String?
     public var tags: [String] = []
     public var summary: String?
     public var title: String?

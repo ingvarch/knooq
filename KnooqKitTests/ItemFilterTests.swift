@@ -4,7 +4,7 @@ import Testing
 @MainActor
 @Suite struct ItemFilterTests {
 
-    private func item(_ category: ItemCategory?, tags: [String] = []) -> SavedItem {
+    private func item(_ category: String?, tags: [String] = []) -> SavedItem {
         let item = SavedItem(rawType: .text)
         item.category = category
         item.tags = tags
@@ -12,31 +12,31 @@ import Testing
     }
 
     @Test func noFiltersReturnsAll() {
-        let items = [item(.idea), item(.tool)]
+        let items = [item("Idea"), item("Tool")]
         #expect(ItemFilter.apply(items, category: nil, tag: nil).count == 2)
     }
 
     @Test func filtersByCategory() {
-        let items = [item(.idea), item(.tool), item(.idea)]
-        let out = ItemFilter.apply(items, category: .idea, tag: nil)
+        let items = [item("Idea"), item("Tool"), item("Idea")]
+        let out = ItemFilter.apply(items, category: "Idea", tag: nil)
         #expect(out.count == 2)
-        #expect(out.allSatisfy { $0.category == .idea })
+        #expect(out.allSatisfy { $0.category == "Idea" })
     }
 
     @Test func filtersByTag() {
-        let items = [item(.idea, tags: ["swift"]), item(.idea, tags: ["ios"])]
+        let items = [item("Idea", tags: ["swift"]), item("Idea", tags: ["ios"])]
         let out = ItemFilter.apply(items, category: nil, tag: "swift")
         #expect(out.count == 1)
     }
 
     @Test func filtersByCategoryAndTag() {
-        let items = [item(.idea, tags: ["swift"]), item(.tool, tags: ["swift"]), item(.idea, tags: ["ios"])]
-        let out = ItemFilter.apply(items, category: .idea, tag: "swift")
+        let items = [item("Idea", tags: ["swift"]), item("Tool", tags: ["swift"]), item("Idea", tags: ["ios"])]
+        let out = ItemFilter.apply(items, category: "Idea", tag: "swift")
         #expect(out.count == 1)
     }
 
     @Test func allTagsAreUniqueAndSorted() {
-        let items = [item(.idea, tags: ["b", "a"]), item(.tool, tags: ["a", "c"])]
+        let items = [item("Idea", tags: ["b", "a"]), item("Tool", tags: ["a", "c"])]
         #expect(ItemFilter.allTags(items) == ["a", "b", "c"])
     }
 }

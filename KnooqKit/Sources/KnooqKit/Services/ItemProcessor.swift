@@ -47,7 +47,7 @@ public final class ItemProcessor: Sendable {
             item.summary = analysis.summary
             item.status = .processed
             item.failureReason = nil
-            knooqLog("ItemProcessor: processed -> \(item.category?.rawValue ?? "?") \(item.tags)")
+            knooqLog("ItemProcessor: processed -> \(item.category ?? "?") \(item.tags)")
         } catch {
             fail(item, "AI analysis failed: \(Self.message(error))")
         }

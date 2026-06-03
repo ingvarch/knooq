@@ -2,11 +2,11 @@ import Foundation
 
 /// A scheduled nudge for one category group.
 public struct NudgeNotification: Sendable, Equatable {
-    public let category: ItemCategory
+    public let category: String
     public let itemCount: Int
     public let message: String
 
-    public init(category: ItemCategory, itemCount: Int, message: String) {
+    public init(category: String, itemCount: Int, message: String) {
         self.category = category
         self.itemCount = itemCount
         self.message = message

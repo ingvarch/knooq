@@ -6,12 +6,12 @@ import KnooqKit
 struct ShareCaptureView: View {
     let payload: SharePayload
     let onCancel: () -> Void
-    let onSave: (ItemCategory?, String) -> Void
+    let onSave: (String?, String) -> Void
 
-    @State private var category: ItemCategory?
+    @State private var category: String?
     @State private var note: String
 
-    init(payload: SharePayload, onCancel: @escaping () -> Void, onSave: @escaping (ItemCategory?, String) -> Void) {
+    init(payload: SharePayload, onCancel: @escaping () -> Void, onSave: @escaping (String?, String) -> Void) {
         self.payload = payload
         self.onCancel = onCancel
         self.onSave = onSave
@@ -29,7 +29,7 @@ struct ShareCaptureView: View {
                         HStack {
                             Text("Category")
                             Spacer()
-                            Text(category?.rawValue ?? "Auto")
+                            Text(category ?? "Auto")
                                 .foregroundStyle(.secondary)
                         }
                     }
@@ -90,14 +90,21 @@ struct ContentPreview: View {
 
 /// Category list pushed from the "Save to" row. Selecting pops back and updates the row.
 struct CategoryPickerView: View {
-    @Binding var selection: ItemCategory?
+    @Binding var selection: String?
     @Environment(\.dismiss) private var dismiss
+
+    /// Auto (let AI decide) + Notes + user's custom folders + built-in suggestions.
+    private var options: [String] {
+        var result = [Categories.notes] + CategoryStore().customFolders
+        for name in Categories.suggestions where !result.contains(name) { result.append(name) }
+        return result
+    }
 
     var body: some View {
         List {
             row("Auto", isOn: selection == nil) { selection = nil; dismiss() }
-            ForEach(ItemCategory.allCases, id: \.self) { category in
-                row(category.rawValue, isOn: selection == category) {
+            ForEach(options, id: \.self) { category in
+                row(category, isOn: selection == category) {
                     selection = category
                     dismiss()
                 }

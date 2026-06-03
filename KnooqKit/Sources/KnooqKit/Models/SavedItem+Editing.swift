@@ -17,7 +17,7 @@ extension SavedItem {
         openedAt = .now
     }
 
-    public func setCategory(_ category: ItemCategory?) {
+    public func setCategory(_ category: String?) {
         self.category = category
         openedAt = .now
     }

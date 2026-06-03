@@ -13,7 +13,7 @@ struct FMItemAnalysis {
 
     var title: String
 
-    @Guide(description: "A detailed tl;dr of the content: 3 to 5 sentences covering the main points, key takeaways, and any actionable details")
+    @Guide(description: "Formatted as: a line starting with 'TL;DR: ' and one concise sentence, then a blank line, then 3 to 5 bullet points, each on its own line starting with '• ', covering the key details and takeaways.")
     var summary: String
 }
 
@@ -51,8 +51,11 @@ final class FMAnalyzer: Analyzer {
            Prefer a folder the user already has. If nothing fits well, use \(Categories.other).
         2. Generate exactly 3 relevant lowercase tags.
         3. Create a concise, descriptive title.
-        4. Write a detailed tl;dr summary of 3-5 sentences covering the main points and key takeaways.
-        Focus on the main topic, intent, and the most useful details of the content.
+        4. Write the summary in this exact shape:
+           - First line: "TL;DR: " followed by one short sentence capturing the gist.
+           - Then a blank line.
+           - Then 3 to 5 bullet points, each on its own line starting with "• ", each a key detail or takeaway.
+        Always use this TL;DR + bullets format. Focus on the most useful details of the content.
         """
     }
 

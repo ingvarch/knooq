@@ -43,6 +43,7 @@
 		6D52BC5C411ED82D65EFF64A /* LanguageDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = E517B9DCEFDF8460E45C464C /* LanguageDetector.swift */; };
 		6FDB8563A9AE57573304BE23 /* TranslatingAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DD39039FC716460BEC66D5B /* TranslatingAnalyzer.swift */; };
 		757248427991FAD86867C524 /* ItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6322192314409686B7865877 /* ItemDetailView.swift */; };
+		75BF66BAEE432C1A2E6A26F6 /* LinkMetadataCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BF3DA13BA56A6A6344AE99 /* LinkMetadataCache.swift */; };
 		7612EC4FECA102C2CE02BEEE /* ItemPresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C47C534B5199C5199E4224B /* ItemPresentation.swift */; };
 		780A6468F56D99A5E0D893C0 /* Readability.js in Resources */ = {isa = PBXBuildFile; fileRef = 258DA1822F9DAE3398611B7D /* Readability.js */; };
 		78569AA73D279C1FDC5387A7 /* ItemFilterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D8D8AEE496625F6EE6A2B84 /* ItemFilterTests.swift */; };
@@ -70,6 +71,7 @@
 		D552BB2864807C82331C323B /* URLTextExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2822BC8214D4B7C8FF76AA2A /* URLTextExtractor.swift */; };
 		D6CAA7DCC76A677F6B573B47 /* OnboardingStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFABBB813035AFFACA972A5 /* OnboardingStoreTests.swift */; };
 		D9338659E2CEDE78A7E99C87 /* KnooqKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1258FB5BC333B7418BABDB8C /* KnooqKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		DB9AA294F912271D5B334878 /* LinkMetadataCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BF3DA13BA56A6A6344AE99 /* LinkMetadataCache.swift */; };
 		E902E80C1D90F6593B1FA419 /* KnooqStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 415D64DFAFA16D0A9874205E /* KnooqStore.swift */; };
 		ECA9A442D35200580A37B3A2 /* ItemFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC59D1E4A834E6BBEDE6D99F /* ItemFilter.swift */; };
 		EF372691D46B098139B7FBDA /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E74D4D8585D36225BB93ED72 /* OnboardingView.swift */; };
@@ -205,6 +207,7 @@
 		AC10E174C5D8EDFB9CFEEE5E /* KnooqApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnooqApp.swift; sourceTree = "<group>"; };
 		AD65A34466775F3C489BDA1C /* RawType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawType.swift; sourceTree = "<group>"; };
 		B20053AC8618D042771A0782 /* CaptureQueueTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureQueueTests.swift; sourceTree = "<group>"; };
+		B3BF3DA13BA56A6A6344AE99 /* LinkMetadataCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkMetadataCache.swift; sourceTree = "<group>"; };
 		B4B0054A6E4FCECF1166BF25 /* Knooq.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Knooq.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C0DD017CBC30C3BBE2C12E68 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C196E73C7747E9A57FE0ACCE /* URLTextExtractorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLTextExtractorTests.swift; sourceTree = "<group>"; };
@@ -446,6 +449,7 @@
 		E7028FB60DE5A658FB592A1E /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				B3BF3DA13BA56A6A6344AE99 /* LinkMetadataCache.swift */,
 				F8D6C342725905C15F178A9C /* LinkPreview.swift */,
 			);
 			path = Shared;
@@ -644,6 +648,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				75BF66BAEE432C1A2E6A26F6 /* LinkMetadataCache.swift in Sources */,
 				07DC70374F758E9ED95C52EB /* LinkPreview.swift in Sources */,
 				1CFD17BB0A2FA6FC727D2F4D /* ShareCaptureView.swift in Sources */,
 				1C0A379BEC414F2D1E7E2D8D /* ShareViewController.swift in Sources */,
@@ -705,6 +710,7 @@
 				7612EC4FECA102C2CE02BEEE /* ItemPresentation.swift in Sources */,
 				BA57DEAE31C2B85D5B365D5C /* KnooqApp.swift in Sources */,
 				6381642EE1C8EB16ABBA181C /* LanguageSupport.swift in Sources */,
+				DB9AA294F912271D5B334878 /* LinkMetadataCache.swift in Sources */,
 				3D692186B9879B5AFB956261 /* LinkPreview.swift in Sources */,
 				B27B1F68F32777F4A3F5FF81 /* NudgeScheduler.swift in Sources */,
 				EF372691D46B098139B7FBDA /* OnboardingView.swift in Sources */,

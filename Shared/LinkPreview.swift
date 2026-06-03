@@ -6,12 +6,17 @@ struct LinkPreview: UIViewRepresentable {
     let url: URL
 
     func makeUIView(context: Context) -> LPLinkView {
+        // Use cached metadata if we have it — no network, instant.
+        if let cached = LinkMetadataCache.shared.metadata(for: url) {
+            return LPLinkView(metadata: cached)
+        }
         let view = LPLinkView(url: url)
-        // Fetch on the main actor via the async API so the non-Sendable metadata never crosses
-        // an actor boundary (avoids the @Sendable-completion data-race warnings).
+        // Fetch once, render, and cache for next time. Async on the main actor so the
+        // non-Sendable metadata never crosses an actor boundary.
         Task { @MainActor in
             if let metadata = try? await LPMetadataProvider().startFetchingMetadata(for: url) {
                 view.metadata = metadata
+                LinkMetadataCache.shared.store(metadata, for: url)
             }
         }
         return view

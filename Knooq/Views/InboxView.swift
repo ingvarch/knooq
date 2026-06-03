@@ -14,6 +14,7 @@ struct InboxView: View {
     @State private var showSettings = false
     @State private var showNewFolder = false
     @State private var newFolderName = ""
+    @State private var searchText = ""
     @State private var customFolders: [String] = CategoryStore().customFolders
 
     private var processing: [SavedItem] { items.filter { $0.status == .pending } }
@@ -30,33 +31,15 @@ struct InboxView: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                Section {
-                    statusRow(.processing, "Processing", "arrow.triangle.2.circlepath", count: processing.count)
-                    statusRow(.needsAttention, "Needs attention", "exclamationmark.triangle", count: needsAttention.count)
-                }
-
-                Section("Folders") {
-                    NavigationLink(value: FolderRoute.all) {
-                        Label("All", systemImage: "tray.full")
-                    }
-                    ForEach(folders, id: \.name) { folder in
-                        NavigationLink(value: FolderRoute.category(folder.name)) {
-                            Label {
-                                HStack {
-                                    Text(folder.name)
-                                    Spacer()
-                                    Text("\(folder.count)").foregroundStyle(.secondary)
-                                }
-                            } icon: {
-                                Image(systemName: categorySymbol(folder.name))
-                            }
-                        }
-                    }
+            Group {
+                if searchText.isEmpty {
+                    inboxList
+                } else {
+                    SearchResultsView(query: searchText, items: items)
                 }
             }
-            .navigationTitle("Inbox")
-            .refreshable { await onRefresh() }
+            .navigationTitle(searchText.isEmpty ? "Inbox" : "Search")
+            .safeAreaInset(edge: .bottom) { searchBar }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button { showNewFolder = true } label: { Image(systemName: "folder.badge.plus") }
@@ -80,6 +63,55 @@ struct InboxView: View {
                 Text("Create a folder you can move items into.")
             }
         }
+    }
+
+    private var inboxList: some View {
+        List {
+            Section {
+                statusRow(.processing, "Processing", "arrow.triangle.2.circlepath", count: processing.count)
+                statusRow(.needsAttention, "Needs attention", "exclamationmark.triangle", count: needsAttention.count)
+            }
+
+            Section("Folders") {
+                NavigationLink(value: FolderRoute.all) {
+                    Label("All", systemImage: "tray.full")
+                }
+                ForEach(folders, id: \.name) { folder in
+                    NavigationLink(value: FolderRoute.category(folder.name)) {
+                        Label {
+                            HStack {
+                                Text(folder.name)
+                                Spacer()
+                                Text("\(folder.count)").foregroundStyle(.secondary)
+                            }
+                        } icon: {
+                            Image(systemName: categorySymbol(folder.name))
+                        }
+                    }
+                }
+            }
+        }
+        .refreshable { await onRefresh() }
+    }
+
+    private var searchBar: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
+            TextField("Search", text: $searchText)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+            if !searchText.isEmpty {
+                Button { searchText = "" } label: {
+                    Image(systemName: "xmark.circle.fill").foregroundStyle(.secondary)
+                }
+            }
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 10)
+        .background(.regularMaterial, in: Capsule())
+        .overlay(Capsule().strokeBorder(.quaternary))
+        .padding(.horizontal)
+        .padding(.bottom, 6)
     }
 
     private func addFolder() {

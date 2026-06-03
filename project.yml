@@ -6,6 +6,10 @@ options:
     iOS: "26.0"
   createIntermediateGroups: true
 
+# Matches Xcode 26 "recommended settings" so it stops prompting "Update".
+attributes:
+  LastUpgradeCheck: "2640"
+
 settings:
   base:
     SWIFT_VERSION: "6.0"
@@ -16,6 +20,10 @@ settings:
     DEVELOPMENT_TEAM: KT9486C6K8
     CODE_SIGN_STYLE: Automatic
     GENERATE_INFOPLIST_FILE: YES
+    # Xcode 26 recommended build settings.
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS: YES
+    STRING_CATALOG_GENERATE_SYMBOLS: YES
 
 targets:
 

@@ -76,7 +76,10 @@ struct ItemDetailView: View {
             Button { editor = .category } label: { Label("Change Folder", systemImage: "folder") }
             Button { editor = .tags } label: { Label("Edit Tags", systemImage: "number") }
             Divider()
-            Button { item.toggleArchive() } label: {
+            Button {
+                item.toggleArchive()
+                dismiss()
+            } label: {
                 Label(item.isArchived ? "Unarchive" : "Archive", systemImage: "archivebox")
             }
             Button(role: .destructive) { confirmingDelete = true } label: {

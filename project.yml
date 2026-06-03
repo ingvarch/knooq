@@ -69,10 +69,12 @@ targets:
         GENERATE_INFOPLIST_FILE: NO
         TARGETED_DEVICE_FAMILY: "1"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
-        # Swift 5 language mode for the app/UI layer only: Apple's Translation framework
-        # (TranslationSession.prepareTranslation) isn't Sendable-annotated for Swift 6 mode.
-        # KnooqKit (all domain logic + tests) stays Swift 6 with complete checking.
+        # Swift 5 language mode + minimal concurrency checking for the app/UI layer only:
+        # Apple's Translation / LinkPresentation / WebKit APIs aren't Sendable-annotated, so
+        # `complete` floods false-positive "sending ... data races" warnings. KnooqKit (all
+        # domain logic + tests) stays Swift 6 with complete checking.
         SWIFT_VERSION: "5.0"
+        SWIFT_STRICT_CONCURRENCY: minimal
     scheme:
       testTargets:
         - KnooqTests

@@ -9,6 +9,14 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             List {
+                Section {
+                    NavigationLink {
+                        RemindersView()
+                    } label: {
+                        Label("Reminders", systemImage: "bell")
+                    }
+                }
+
                 Section("Translation") {
                     NavigationLink {
                         LanguagesView()

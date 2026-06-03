@@ -9,11 +9,9 @@ final class NudgeScheduler {
     static let taskIdentifier = "app.knooq.ios.nudge-check"
 
     private let container: ModelContainer
-    private let runner: NudgeRunner
 
     init(container: ModelContainer) {
         self.container = container
-        self.runner = NudgeRunner(engine: NudgeEngine(), notifier: UNNotifier())
     }
 
     func registerBackgroundTask() {
@@ -28,8 +26,16 @@ final class NudgeScheduler {
         try? BGTaskScheduler.shared.submit(request)
     }
 
-    /// Fetch all items, run one nudge pass, persist stamps.
+    /// Fetch all items, run one nudge pass with the user's settings, persist stamps.
     func runNudgeCheck() async {
+        let settings = NudgeSettings()
+        guard settings.enabled else {
+            knooqLog("NudgeScheduler: reminders disabled, skipping")
+            return
+        }
+        let engine = NudgeEngine(staleDays: settings.staleDays, minGroupSize: settings.minGroupSize)
+        let runner = NudgeRunner(engine: engine, notifier: UNNotifier())
+
         let context = container.mainContext
         guard let items = try? context.fetch(FetchDescriptor<SavedItem>()) else { return }
         await runner.run(items: items)

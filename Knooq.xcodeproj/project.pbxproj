@@ -28,10 +28,12 @@
 		2A49A00DC133BD54C40F09A0 /* NudgeRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE0F5D604C84F4CEA45FDC9 /* NudgeRunner.swift */; };
 		2BD99444EA4AEAD817674DC7 /* SavedItemEditingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4935901E07CE62E50075AFD7 /* SavedItemEditingTests.swift */; };
 		2FC6CBBF9D0EFECD66F820D5 /* ItemProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EBB4A344E06C3C986803BF6 /* ItemProcessorTests.swift */; };
+		3083E89807894ECA1B0CF7B5 /* LinkPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D6C342725905C15F178A9C /* LinkPreview.swift */; };
 		3C44D0AFDCD33F11599ED53F /* TextTranslator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174932869EE22AB667548654 /* TextTranslator.swift */; };
 		3D692186B9879B5AFB956261 /* LinkPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D6C342725905C15F178A9C /* LinkPreview.swift */; };
 		3F7EED84FC64F69104AFE2A7 /* OCR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 924B43E35506849A34E7C924 /* OCR.swift */; };
 		3FBD52350BD12329D94E491E /* SavedItem+Editing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91A005AE604A66346FB49806 /* SavedItem+Editing.swift */; };
+		498E36AD6BF16E39E8349461 /* KnooqKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1258FB5BC333B7418BABDB8C /* KnooqKit.framework */; };
 		4A317EA339F250791ACBA944 /* KnooqKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1258FB5BC333B7418BABDB8C /* KnooqKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		4A617A9FE8C8822C04606A8F /* KnooqKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8D33807DB1E67D12027B1C9 /* KnooqKitTests.swift */; };
 		4A7BF38A65BC1FFC7A06D093 /* URLTextExtractorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C196E73C7747E9A57FE0ACCE /* URLTextExtractorTests.swift */; };
@@ -40,14 +42,17 @@
 		4EA0271468CA1A32B4364770 /* UNNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0690A62CC20FE9924148FAC9 /* UNNotifier.swift */; };
 		4F989752ECBD161DEF186215 /* RawType.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD65A34466775F3C489BDA1C /* RawType.swift */; };
 		5443882E139882317A13A1DD /* KnooqKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1258FB5BC333B7418BABDB8C /* KnooqKit.framework */; };
+		5769FD7A5B9F7DE10D01B4FF /* CaptureIngest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4245A18CB0C17AE9CD869CC5 /* CaptureIngest.swift */; };
 		585E7DCF5135603A2E5EF115 /* KnooqKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088932655230EE40E97ACC2C /* KnooqKit.swift */; };
 		59D3CFE27472765E2D4D034C /* KnooqKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1258FB5BC333B7418BABDB8C /* KnooqKit.framework */; };
 		5C1E114A8C306D80C34A0C18 /* NudgeEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61EAD30BC1504E0240FEC57D /* NudgeEngineTests.swift */; };
 		5C2CB5E4C7C0561742376A48 /* NudgeRunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC51D26B26705818AE4AAA95 /* NudgeRunnerTests.swift */; };
+		5C915E2A3694368D1AD9F5B9 /* CaptureIngest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4245A18CB0C17AE9CD869CC5 /* CaptureIngest.swift */; };
 		618CA9B99ECABC85AF9FEC3A /* ImageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5794EAC3A84EA8AFA20EBC7 /* ImageStore.swift */; };
 		6381642EE1C8EB16ABBA181C /* LanguageSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AFBC680DD08B7AE4C9FD4AE /* LanguageSupport.swift */; };
 		6435D81EDC47A1963DE1B561 /* ItemSortingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E59BD69941B86CCFA172CD63 /* ItemSortingTests.swift */; };
 		6441494AB1F8640D790A4CC1 /* ImageStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD80C1F71379047BACD3049 /* ImageStoreTests.swift */; };
+		658D97AC02B18724BA6AF0BA /* LinkMetadataCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BF3DA13BA56A6A6344AE99 /* LinkMetadataCache.swift */; };
 		6A64D9152BEB68DE39388CAF /* ItemSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720586C26720AD1F5858E2E4 /* ItemSearch.swift */; };
 		6AA92091A2F37811DDA86F34 /* SavedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A45AB2BE304F024F794B73A /* SavedItem.swift */; };
 		6B45B4075DC2FA3D1532A307 /* TranslatingAnalyzerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B85A97A8E46967EC6B28665 /* TranslatingAnalyzerTests.swift */; };
@@ -69,7 +74,9 @@
 		8B3A7A6E90F6674784FB619A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C0DD017CBC30C3BBE2C12E68 /* Assets.xcassets */; };
 		8C0A08A5606BB68A63918A00 /* Categories.swift in Sources */ = {isa = PBXBuildFile; fileRef = D54711AAA8E5401A3DCC45B8 /* Categories.swift */; };
 		93A5BE783EFA4F7544231086 /* ItemAnalysisValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036EBAF62486003CB390260D /* ItemAnalysisValidationTests.swift */; };
+		94B7C5B7610D273BFD1DFA22 /* ActionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54358BB9F6AC1A99DA8EE0E1 /* ActionViewController.swift */; };
 		97D5B6C2719A33A8FDA47EA7 /* OnboardingStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E14C6E15608DB61B141471B /* OnboardingStore.swift */; };
+		9C6B00463DE397DACFDA000D /* KnooqAction.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1CB64604CD0F7686726297F7 /* KnooqAction.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		9F764F90A097A812134F850C /* KnooqKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1258FB5BC333B7418BABDB8C /* KnooqKit.framework */; };
 		A44094BCF3D31705930D7193 /* TranslationBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7B55E97D033825AEF5FF9D /* TranslationBridge.swift */; };
 		A8513A1447F3B8821D576CBF /* CaptureTitleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B34516A79FCB2E7D705CED3 /* CaptureTitleTests.swift */; };
@@ -96,6 +103,7 @@
 		F2969DB8C3BFFBC1F703456B /* CaptureTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9380D2CC059E97017FE75B19 /* CaptureTitle.swift */; };
 		F825E95BF10472F4F0FDC0A0 /* ItemProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86D0F5D091DC9835C36C4025 /* ItemProcessor.swift */; };
 		FA824315F8A252C2EC0256CA /* ModelsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FA8E55FDA570FE43EB5595D /* ModelsTests.swift */; };
+		FB5C37B7FEDB9AAB9BAF7168 /* CaptureIngest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4245A18CB0C17AE9CD869CC5 /* CaptureIngest.swift */; };
 		FBB061B9DA95428866030EBC /* Folders.swift in Sources */ = {isa = PBXBuildFile; fileRef = E386F4B58C6591D8E6034A58 /* Folders.swift */; };
 /* End PBXBuildFile section */
 
@@ -106,6 +114,20 @@
 			proxyType = 1;
 			remoteGlobalIDString = CA69C317136B91E49E3B649B;
 			remoteInfo = KnooqKit;
+		};
+		8DC1D6D48AD2F5D8BFB19938 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4C2688E0AA8BE3783CBE7A05 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CA69C317136B91E49E3B649B;
+			remoteInfo = KnooqKit;
+		};
+		941E5A062FF27F9426C41EB9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4C2688E0AA8BE3783CBE7A05 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7F3DA2960C2EED51E632F328;
+			remoteInfo = KnooqAction;
 		};
 		C0AB721A6BC6FBDD709681B1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -167,6 +189,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				C56AA95480636442EE7E38C0 /* KnooqShare.appex in Embed Foundation Extensions */,
+				9C6B00463DE397DACFDA000D /* KnooqAction.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -185,9 +208,11 @@
 		15FA56271CAD8DFAB16921A9 /* Notifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifier.swift; sourceTree = "<group>"; };
 		174932869EE22AB667548654 /* TextTranslator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextTranslator.swift; sourceTree = "<group>"; };
 		1BE0F5D604C84F4CEA45FDC9 /* NudgeRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NudgeRunner.swift; sourceTree = "<group>"; };
+		1CB64604CD0F7686726297F7 /* KnooqAction.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = KnooqAction.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FF4525AD8B3281F03EB2899 /* DateProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateProvider.swift; sourceTree = "<group>"; };
 		22D863E1A454C0BF93D4994A /* KnooqShare.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = KnooqShare.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		2482522FE718941008D7CEB5 /* ImageTextExtractorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageTextExtractorTests.swift; sourceTree = "<group>"; };
+		253849F0E37B775FD82D3DA0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		258DA1822F9DAE3398611B7D /* Readability.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = Readability.js; sourceTree = "<group>"; };
 		272C3E40CA2289405EAC4361 /* CategoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryStore.swift; sourceTree = "<group>"; };
 		2822BC8214D4B7C8FF76AA2A /* URLTextExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLTextExtractor.swift; sourceTree = "<group>"; };
@@ -199,10 +224,12 @@
 		3B34516A79FCB2E7D705CED3 /* CaptureTitleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureTitleTests.swift; sourceTree = "<group>"; };
 		40C5A05DB603CBBA14089917 /* PreviewSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewSupport.swift; sourceTree = "<group>"; };
 		415D64DFAFA16D0A9874205E /* KnooqStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnooqStore.swift; sourceTree = "<group>"; };
+		4245A18CB0C17AE9CD869CC5 /* CaptureIngest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureIngest.swift; sourceTree = "<group>"; };
 		42B5C5B0A86AA504799654DB /* TagFilteringTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagFilteringTests.swift; sourceTree = "<group>"; };
 		4935901E07CE62E50075AFD7 /* SavedItemEditingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedItemEditingTests.swift; sourceTree = "<group>"; };
 		4A45AB2BE304F024F794B73A /* SavedItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedItem.swift; sourceTree = "<group>"; };
 		526B965F1B59F705C170AB15 /* CaptureQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureQueue.swift; sourceTree = "<group>"; };
+		54358BB9F6AC1A99DA8EE0E1 /* ActionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionViewController.swift; sourceTree = "<group>"; };
 		56A3DB084941D168EBB075C8 /* Analyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Analyzer.swift; sourceTree = "<group>"; };
 		57ECA7088BAC020FF4CCF871 /* PDFTextExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFTextExtractor.swift; sourceTree = "<group>"; };
 		5B85A97A8E46967EC6B28665 /* TranslatingAnalyzerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslatingAnalyzerTests.swift; sourceTree = "<group>"; };
@@ -221,6 +248,7 @@
 		7DD39039FC716460BEC66D5B /* TranslatingAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslatingAnalyzer.swift; sourceTree = "<group>"; };
 		7E14C6E15608DB61B141471B /* OnboardingStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingStore.swift; sourceTree = "<group>"; };
 		7FA8E55FDA570FE43EB5595D /* ModelsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelsTests.swift; sourceTree = "<group>"; };
+		8412EA4CABE1194BB4FF255D /* KnooqAction.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KnooqAction.entitlements; sourceTree = "<group>"; };
 		860CE33B8F422BB0AADD7CA5 /* KnooqShare.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KnooqShare.entitlements; sourceTree = "<group>"; };
 		863A842BE91CD9FD84F3F94B /* NudgeSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NudgeSettings.swift; sourceTree = "<group>"; };
 		86D0F5D091DC9835C36C4025 /* ItemProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemProcessor.swift; sourceTree = "<group>"; };
@@ -281,6 +309,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				5443882E139882317A13A1DD /* KnooqKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B9CF86B89974EA3EA7295563 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				498E36AD6BF16E39E8349461 /* KnooqKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -364,6 +400,7 @@
 			isa = PBXGroup;
 			children = (
 				B4B0054A6E4FCECF1166BF25 /* Knooq.app */,
+				1CB64604CD0F7686726297F7 /* KnooqAction.appex */,
 				1258FB5BC333B7418BABDB8C /* KnooqKit.framework */,
 				048922BCF10B7A4A5A1A7E22 /* KnooqKitTests.xctest */,
 				22D863E1A454C0BF93D4994A /* KnooqShare.appex */,
@@ -376,6 +413,7 @@
 			isa = PBXGroup;
 			children = (
 				BCE3E6C10FA5BBDC389C09E2 /* Knooq */,
+				9778D9BE6C01508EE4604A64 /* KnooqAction */,
 				A5516F3AA4F31803C4D17BB8 /* KnooqKit */,
 				2F0C6410233C524F40A80D0E /* KnooqKitTests */,
 				F706B82E37C39BE6E7EC4A38 /* KnooqShare */,
@@ -391,6 +429,16 @@
 				E498C298A32087A2D271E332 /* KnooqKit */,
 			);
 			path = Sources;
+			sourceTree = "<group>";
+		};
+		9778D9BE6C01508EE4604A64 /* KnooqAction */ = {
+			isa = PBXGroup;
+			children = (
+				54358BB9F6AC1A99DA8EE0E1 /* ActionViewController.swift */,
+				253849F0E37B775FD82D3DA0 /* Info.plist */,
+				8412EA4CABE1194BB4FF255D /* KnooqAction.entitlements */,
+			);
+			path = KnooqAction;
 			sourceTree = "<group>";
 		};
 		9898C8E8D566FEB496CA93A9 /* KnooqTests */ = {
@@ -498,6 +546,7 @@
 		E7028FB60DE5A658FB592A1E /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				4245A18CB0C17AE9CD869CC5 /* CaptureIngest.swift */,
 				B3BF3DA13BA56A6A6344AE99 /* LinkMetadataCache.swift */,
 				F8D6C342725905C15F178A9C /* LinkPreview.swift */,
 			);
@@ -549,6 +598,25 @@
 			productReference = 073EA331E97FAD5268A1B8C6 /* KnooqTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		7F3DA2960C2EED51E632F328 /* KnooqAction */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8D9DFB2FE89E7D68DD8C2FC4 /* Build configuration list for PBXNativeTarget "KnooqAction" */;
+			buildPhases = (
+				A97E7BB73A655760FA7168C3 /* Sources */,
+				B9CF86B89974EA3EA7295563 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2A38D5F7C70704062308D59B /* PBXTargetDependency */,
+			);
+			name = KnooqAction;
+			packageProductDependencies = (
+			);
+			productName = KnooqAction;
+			productReference = 1CB64604CD0F7686726297F7 /* KnooqAction.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		98FA4402F8A34FB2A2DF6F8A /* KnooqShare */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = BAC92C84785128D6E513FB19 /* Build configuration list for PBXNativeTarget "KnooqShare" */;
@@ -583,6 +651,7 @@
 			dependencies = (
 				D263696540F3B8E47D38521C /* PBXTargetDependency */,
 				58A86FB5C5907A4642722826 /* PBXTargetDependency */,
+				414EAD06128FEA5EDCA94B72 /* PBXTargetDependency */,
 			);
 			name = Knooq;
 			packageProductDependencies = (
@@ -641,6 +710,10 @@
 						DevelopmentTeam = KT9486C6K8;
 						ProvisioningStyle = Automatic;
 					};
+					7F3DA2960C2EED51E632F328 = {
+						DevelopmentTeam = KT9486C6K8;
+						ProvisioningStyle = Automatic;
+					};
 					98FA4402F8A34FB2A2DF6F8A = {
 						DevelopmentTeam = KT9486C6K8;
 						ProvisioningStyle = Automatic;
@@ -674,6 +747,7 @@
 			projectRoot = "";
 			targets = (
 				C780993657AA5C3548EC1083 /* Knooq */,
+				7F3DA2960C2EED51E632F328 /* KnooqAction */,
 				CA69C317136B91E49E3B649B /* KnooqKit */,
 				E9AAB3C7ABDEF5C4304187C7 /* KnooqKitTests */,
 				98FA4402F8A34FB2A2DF6F8A /* KnooqShare */,
@@ -699,6 +773,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB5C37B7FEDB9AAB9BAF7168 /* CaptureIngest.swift in Sources */,
 				75BF66BAEE432C1A2E6A26F6 /* LinkMetadataCache.swift in Sources */,
 				07DC70374F758E9ED95C52EB /* LinkPreview.swift in Sources */,
 				1CFD17BB0A2FA6FC727D2F4D /* ShareCaptureView.swift in Sources */,
@@ -714,6 +789,17 @@
 				AA68EEA3F7A74707E34B5593 /* ImageTextExtractorTests.swift in Sources */,
 				ACD69F93D8D97C2F3FCCCA0D /* KnooqTests.swift in Sources */,
 				4A7BF38A65BC1FFC7A06D093 /* URLTextExtractorTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A97E7BB73A655760FA7168C3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				94B7C5B7610D273BFD1DFA22 /* ActionViewController.swift in Sources */,
+				5C915E2A3694368D1AD9F5B9 /* CaptureIngest.swift in Sources */,
+				658D97AC02B18724BA6AF0BA /* LinkMetadataCache.swift in Sources */,
+				3083E89807894ECA1B0CF7B5 /* LinkPreview.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -759,6 +845,7 @@
 			files = (
 				8661679BE1DCD1B90C3C4D84 /* AppServices.swift in Sources */,
 				2337A36BEA34311AA9B3A778 /* AvailabilityGateView.swift in Sources */,
+				5769FD7A5B9F7DE10D01B4FF /* CaptureIngest.swift in Sources */,
 				141E9AD1A59372926ECA2800 /* CategoryView.swift in Sources */,
 				7C5E206087F7F26F9F97D4BE /* CompositeTextExtractor.swift in Sources */,
 				1E83A09816A7042285A6A9C6 /* FMAnalyzer.swift in Sources */,
@@ -815,6 +902,16 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		2A38D5F7C70704062308D59B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CA69C317136B91E49E3B649B /* KnooqKit */;
+			targetProxy = 8DC1D6D48AD2F5D8BFB19938 /* PBXContainerItemProxy */;
+		};
+		414EAD06128FEA5EDCA94B72 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7F3DA2960C2EED51E632F328 /* KnooqAction */;
+			targetProxy = 941E5A062FF27F9426C41EB9 /* PBXContainerItemProxy */;
+		};
 		58A86FB5C5907A4642722826 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 98FA4402F8A34FB2A2DF6F8A /* KnooqShare */;
@@ -871,6 +968,22 @@
 				PRODUCT_BUNDLE_IDENTIFIER = app.knooq.ios.kit.tests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		33F60B55A838578A88C0945C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = KnooqAction/KnooqAction.entitlements;
+				INFOPLIST_FILE = KnooqAction/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = app.knooq.ios.action;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -990,6 +1103,22 @@
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Knooq.app/Knooq";
 			};
 			name = Release;
+		};
+		9149F2B90F152B046BBED1E7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = KnooqAction/KnooqAction.entitlements;
+				INFOPLIST_FILE = KnooqAction/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = app.knooq.ios.action;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
 		};
 		B55640CC5D1D2BBD44DE5E6D /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -1195,6 +1324,15 @@
 			buildConfigurations = (
 				B55640CC5D1D2BBD44DE5E6D /* Debug */,
 				DF574FCD0E02D483092B0FB6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		8D9DFB2FE89E7D68DD8C2FC4 /* Build configuration list for PBXNativeTarget "KnooqAction" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9149F2B90F152B046BBED1E7 /* Debug */,
+				33F60B55A838578A88C0945C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

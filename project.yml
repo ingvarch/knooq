@@ -50,6 +50,7 @@ targets:
       - target: KnooqKit
         embed: true
       - target: KnooqShare
+      - target: KnooqAction
     entitlements:
       path: Knooq/Knooq.entitlements
       properties:
@@ -125,6 +126,40 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.knooq.ios.share
+        TARGETED_DEVICE_FAMILY: "1"
+
+  KnooqAction:
+    type: app-extension
+    platform: iOS
+    sources:
+      - KnooqAction
+      - Shared
+    dependencies:
+      - target: KnooqKit
+        embed: false
+    entitlements:
+      path: KnooqAction/KnooqAction.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.app.knooq.ios
+    info:
+      path: KnooqAction/Info.plist
+      properties:
+        CFBundleDisplayName: Knooq
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.ui-services
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).ActionViewController
+          NSExtensionAttributes:
+            NSExtensionActivationRule:
+              NSExtensionActivationSupportsWebURLWithMaxCount: 1
+              NSExtensionActivationSupportsImageWithMaxCount: 1
+              NSExtensionActivationSupportsText: true
+              NSExtensionActivationSupportsFileWithMaxCount: 1
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.knooq.ios.action
         TARGETED_DEVICE_FAMILY: "1"
 
   KnooqKitTests:

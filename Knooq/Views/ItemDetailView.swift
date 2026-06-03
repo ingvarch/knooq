@@ -21,6 +21,7 @@ struct ItemDetailView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 header
+                if item.status == .failed { failureCard }
                 CategoryBadge(category: item.category)
 
                 if let description = item.displayDescription {
@@ -74,15 +75,40 @@ struct ItemDetailView: View {
         }
     }
 
+    private var failureCard: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Label("Couldn't process this", systemImage: "exclamationmark.triangle.fill")
+                .font(.headline)
+                .foregroundStyle(.red)
+            if let reason = item.failureReason {
+                Text(reason)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            Text("You can retry, or file it into a folder manually from the menu above.")
+                .font(.caption)
+                .foregroundStyle(.tertiary)
+            Button { retryProcessing() } label: {
+                Label("Retry", systemImage: "arrow.clockwise")
+            }
+            .buttonStyle(.bordered)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding()
+        .background(.red.opacity(0.08), in: RoundedRectangle(cornerRadius: 12))
+    }
+
+    private func retryProcessing() {
+        item.status = .pending
+        item.failureReason = nil
+        dismiss()
+        Task { await onRetry() }
+    }
+
     private var settingsMenu: some View {
         Menu {
             if item.status == .failed {
-                Button {
-                    item.status = .pending
-                    item.failureReason = nil
-                    dismiss()
-                    Task { await onRetry() }
-                } label: { Label("Retry", systemImage: "arrow.clockwise") }
+                Button { retryProcessing() } label: { Label("Retry", systemImage: "arrow.clockwise") }
                 Divider()
             }
             Button { editor = .category } label: { Label("Change Folder", systemImage: "folder") }

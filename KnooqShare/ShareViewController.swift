@@ -86,14 +86,18 @@ final class ShareViewController: UIViewController {
                 let filename = try? ImageStore.appGroup().save(data, ext: "pdf")
                 return SharePayload(rawType: .pdf, url: nil, text: nil, imageFilename: filename, imageData: nil)
             }
-            if provider.hasItemConformingToTypeIdentifier(UTType.url.identifier),
-               let url = try? await provider.loadItem(forTypeIdentifier: UTType.url.identifier) as? URL {
-                return SharePayload(rawType: .url, url: url, text: nil, imageFilename: nil, imageData: nil)
-            }
+            // Image before URL: an image file also conforms to public.url (a file URL); web pages
+            // don't conform to public.image, so they still fall through to the URL branch.
             if provider.hasItemConformingToTypeIdentifier(UTType.image.identifier),
                let data = try? await loadData(provider, UTType.image.identifier) {
                 let filename = try? ImageStore.appGroup().save(data)
                 return SharePayload(rawType: .image, url: nil, text: nil, imageFilename: filename, imageData: data)
+            }
+            if provider.hasItemConformingToTypeIdentifier(UTType.url.identifier),
+               let url = try? await provider.loadItem(forTypeIdentifier: UTType.url.identifier) as? URL {
+                // Skip file URLs here (handled as image/pdf above); only capture web URLs.
+                if url.isFileURL { continue }
+                return SharePayload(rawType: .url, url: url, text: nil, imageFilename: nil, imageData: nil)
             }
             if provider.hasItemConformingToTypeIdentifier(UTType.plainText.identifier),
                let text = try? await provider.loadItem(forTypeIdentifier: UTType.plainText.identifier) as? String {

@@ -2,36 +2,29 @@ import SwiftUI
 import SwiftData
 import KnooqKit
 
+private enum DetailEditor: String, Identifiable {
+    case category, tags
+    var id: String { rawValue }
+}
+
 struct ItemDetailView: View {
     @Bindable var item: SavedItem
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
 
-    @State private var isEditingTags = false
-    @State private var newTag = ""
+    @State private var editor: DetailEditor?
     @State private var confirmingDelete = false
-
-    /// Category edits route through `setCategory` so `openedAt` stamping stays in one place (DRY).
-    private var categoryBinding: Binding<String?> {
-        Binding(get: { item.category }, set: { item.setCategory($0) })
-    }
-
-    /// Folders the user can move this item into: Notes + their custom folders + built-in suggestions.
-    private var availableCategories: [String] {
-        var result = [Categories.notes] + CategoryStore().customFolders
-        for name in Categories.suggestions where !result.contains(name) { result.append(name) }
-        return result
-    }
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 header
-                categorySection
-                tagsSection
+                CategoryBadge(category: item.category)
+
                 if let description = item.displayDescription {
                     section("Description") { Text(description).font(.body) }
                 }
+
                 if let url = item.rawURL {
                     Link(destination: url) {
                         Label("Open Original", systemImage: "safari").frame(maxWidth: .infinity)
@@ -42,11 +35,23 @@ struct ItemDetailView: View {
                 if let filename = item.imageFilename {
                     ImagePreview(filename: filename)
                 }
-                actions
+
+                if !item.tags.isEmpty {
+                    section("Tags") { TagsRow(tags: item.tags) }
+                }
             }
             .padding()
         }
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) { settingsMenu }
+        }
+        .sheet(item: $editor) { which in
+            switch which {
+            case .category: CategoryEditorSheet(item: item)
+            case .tags: TagsEditorSheet(item: item)
+            }
+        }
         .confirmationDialog("Delete this item?", isPresented: $confirmingDelete, titleVisibility: .visible) {
             Button("Delete", role: .destructive) {
                 context.delete(item)
@@ -66,56 +71,103 @@ struct ItemDetailView: View {
         }
     }
 
-    private var categorySection: some View {
-        section("Category") {
-            Picker("Category", selection: categoryBinding) {
-                Text("None").tag(String?.none)
-                ForEach(availableCategories, id: \.self) { name in
-                    Text(name).tag(String?.some(name))
-                }
+    private var settingsMenu: some View {
+        Menu {
+            Button { editor = .category } label: { Label("Change Folder", systemImage: "folder") }
+            Button { editor = .tags } label: { Label("Edit Tags", systemImage: "number") }
+            Divider()
+            Button { item.toggleArchive() } label: {
+                Label(item.isArchived ? "Unarchive" : "Archive", systemImage: "archivebox")
             }
-            .pickerStyle(.menu)
+            Button(role: .destructive) { confirmingDelete = true } label: {
+                Label("Delete", systemImage: "trash")
+            }
+        } label: {
+            Image(systemName: "ellipsis.circle")
         }
     }
 
-    private var tagsSection: some View {
-        section("Tags", trailing: Button(isEditingTags ? "Done" : "Edit") { isEditingTags.toggle() }) {
-            FlowLayout(spacing: 8) {
-                ForEach(item.tags, id: \.self) { tag in
-                    EditableTagChip(tag: tag, isEditing: isEditingTags) { item.removeTag(tag) }
+    private func section<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title).font(.headline)
+            content()
+        }
+    }
+}
+
+/// Read-only badge showing the item's current folder.
+struct CategoryBadge: View {
+    let category: String?
+    var body: some View {
+        Label(category ?? "Unfiled", systemImage: categorySymbol(category ?? ""))
+            .font(.subheadline.weight(.medium))
+            .padding(.horizontal, 12)
+            .padding(.vertical, 7)
+            .background(.tint.opacity(0.15), in: Capsule())
+            .foregroundStyle(.tint)
+    }
+}
+
+/// Bottom sheet to move the item to another folder.
+struct CategoryEditorSheet: View {
+    @Bindable var item: SavedItem
+    @Environment(\.dismiss) private var dismiss
+
+    private var options: [String] {
+        var result = [Categories.notes] + CategoryStore().customFolders
+        for name in Categories.suggestions where !result.contains(name) { result.append(name) }
+        return result
+    }
+
+    var body: some View {
+        NavigationStack {
+            List {
+                ForEach(options, id: \.self) { name in
+                    Button {
+                        item.setCategory(name)
+                        dismiss()
+                    } label: {
+                        HStack {
+                            Label(name, systemImage: categorySymbol(name)).foregroundStyle(.primary)
+                            Spacer()
+                            if item.category == name { Image(systemName: "checkmark").foregroundStyle(.tint) }
+                        }
+                    }
                 }
-                if isEditingTags {
+            }
+            .navigationTitle("Folder")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
+        }
+        .presentationDetents([.medium, .large])
+    }
+}
+
+/// Bottom sheet to edit the item's tags.
+struct TagsEditorSheet: View {
+    @Bindable var item: SavedItem
+    @Environment(\.dismiss) private var dismiss
+    @State private var newTag = ""
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                FlowLayout(spacing: 8) {
+                    ForEach(item.tags, id: \.self) { tag in
+                        EditableTagChip(tag: tag, isEditing: true) { item.removeTag(tag) }
+                    }
                     AddTagField(text: $newTag) {
                         item.addTag(newTag)
                         newTag = ""
                     }
                 }
+                .padding()
             }
+            .navigationTitle("Tags")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
         }
-    }
-
-    private var actions: some View {
-        HStack(spacing: 16) {
-            Button(item.isArchived ? "Unarchive" : "Archive") { item.toggleArchive() }
-                .buttonStyle(.bordered)
-            Button("Delete", role: .destructive) { confirmingDelete = true }
-                .buttonStyle(.bordered)
-        }
-    }
-
-    private func section<Content: View>(
-        _ title: String,
-        trailing: (some View)? = Optional<EmptyView>.none,
-        @ViewBuilder content: () -> Content
-    ) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text(title).font(.headline)
-                Spacer()
-                trailing
-            }
-            content()
-        }
+        .presentationDetents([.medium])
     }
 }
 

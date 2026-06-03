@@ -56,11 +56,14 @@ struct ItemDetailView: View {
             case .description: DescriptionEditorSheet(item: item)
             }
         }
-        .confirmationDialog("Delete this item?", isPresented: $confirmingDelete, titleVisibility: .visible) {
+        .alert("Delete this item?", isPresented: $confirmingDelete) {
+            Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
                 context.delete(item)
                 dismiss()
             }
+        } message: {
+            Text("This can't be undone.")
         }
     }
 

@@ -67,7 +67,7 @@ struct InboxView: View {
                 TagFilterView(initial: selection)
             }
             .navigationDestination(for: SavedItem.self) { item in
-                ItemDetailView(item: item)
+                ItemDetailView(item: item, onRetry: onRefresh)
             }
             .sheet(isPresented: $showSettings) { SettingsView() }
             .alert("New folder", isPresented: $showNewFolder) {

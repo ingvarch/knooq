@@ -9,6 +9,8 @@ private enum DetailEditor: String, Identifiable {
 
 struct ItemDetailView: View {
     @Bindable var item: SavedItem
+    var onRetry: () async -> Void = {}
+
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
 
@@ -74,6 +76,15 @@ struct ItemDetailView: View {
 
     private var settingsMenu: some View {
         Menu {
+            if item.status == .failed {
+                Button {
+                    item.status = .pending
+                    item.failureReason = nil
+                    dismiss()
+                    Task { await onRetry() }
+                } label: { Label("Retry", systemImage: "arrow.clockwise") }
+                Divider()
+            }
             Button { editor = .category } label: { Label("Change Folder", systemImage: "folder") }
             Button { editor = .tags } label: { Label("Edit Tags", systemImage: "number") }
             Button { editor = .description } label: { Label("Edit Description", systemImage: "text.alignleft") }

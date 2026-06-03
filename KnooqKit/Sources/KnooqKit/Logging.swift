@@ -1,8 +1,10 @@
-import Foundation
+import os
 
-/// Lightweight DEBUG-only console logging. No-op in release.
+private let knooqLogger = Logger(subsystem: "app.knooq.ios", category: "pipeline")
+
+/// App-wide logging via os.Logger — visible in Console.app and device logs (even in release),
+/// not just the Xcode debugger.
 public func knooqLog(_ message: @autoclosure () -> String) {
-    #if DEBUG
-    print("[Knooq] \(message())")
-    #endif
+    let text = message()
+    knooqLogger.log("\(text, privacy: .public)")
 }

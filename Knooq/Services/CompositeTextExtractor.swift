@@ -3,6 +3,7 @@ import KnooqKit
 enum ExtractionError: Error {
     case missingURL
     case missingImage
+    case missingFile
 }
 
 /// Routes extraction by raw type: text as-is, URL via Readability, image via Vision OCR.
@@ -26,6 +27,9 @@ final class CompositeTextExtractor: TextExtractor {
         case .image:
             guard let filename = payload.imageFilename else { throw ExtractionError.missingImage }
             return try await imageExtractor.extract(from: filename)
+        case .pdf:
+            guard let filename = payload.imageFilename else { throw ExtractionError.missingFile }
+            return try await PDFTextExtractor().extract(from: filename)
         }
     }
 }

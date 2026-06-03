@@ -5,4 +5,5 @@ public enum RawType: String, Codable, CaseIterable, Sendable {
     case url
     case image
     case text
+    case pdf
 }

@@ -121,6 +121,7 @@ targets:
               NSExtensionActivationSupportsWebURLWithMaxCount: 1
               NSExtensionActivationSupportsImageWithMaxCount: 1
               NSExtensionActivationSupportsText: true
+              NSExtensionActivationSupportsFileWithMaxCount: 1
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.knooq.ios.share

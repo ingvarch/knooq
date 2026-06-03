@@ -14,6 +14,8 @@ public enum CaptureTitle {
             return "Shared note"
         case .image:
             return "Shared image"
+        case .pdf:
+            return "Shared PDF"
         }
     }
 }

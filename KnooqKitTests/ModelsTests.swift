@@ -30,7 +30,7 @@ import Foundation
     }
 
     @Test func rawTypeRoundTrips() throws {
-        for type in [RawType.url, .image, .text] {
+        for type in [RawType.url, .image, .text, .pdf] {
             let data = try JSONEncoder().encode(type)
             #expect(try JSONDecoder().decode(RawType.self, from: data) == type)
         }

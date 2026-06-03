@@ -82,6 +82,9 @@ struct ContentPreview: View {
                     .frame(maxHeight: 200)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
             }
+        case .pdf:
+            Label("PDF", systemImage: "doc.richtext")
+                .foregroundStyle(.secondary)
         case .text:
             EmptyView()
         }

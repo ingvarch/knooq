@@ -24,11 +24,11 @@ public struct ImageStore: Sendable {
         directory.appendingPathComponent(filename)
     }
 
-    /// Writes image data under a fresh unique filename and returns it.
+    /// Writes data under a fresh unique filename (default .jpg; pass `ext` for other files like pdf).
     @discardableResult
-    public func save(_ data: Data) throws -> String {
+    public func save(_ data: Data, ext: String = "jpg") throws -> String {
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-        let filename = "\(UUID().uuidString).jpg"
+        let filename = "\(UUID().uuidString).\(ext)"
         try data.write(to: url(for: filename), options: .atomic)
         return filename
     }

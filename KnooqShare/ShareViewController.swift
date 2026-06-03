@@ -63,6 +63,10 @@ final class ShareViewController: UIViewController {
             capture = PendingCapture(rawType: .image, urlString: nil, text: nil,
                                      imageFilename: payload.imageFilename, createdAt: now,
                                      note: trimmed.isEmpty ? nil : trimmed, category: category)
+        case .pdf:
+            capture = PendingCapture(rawType: .pdf, urlString: nil, text: nil,
+                                     imageFilename: payload.imageFilename, createdAt: now,
+                                     note: trimmed.isEmpty ? nil : trimmed, category: category)
         }
 
         try? CaptureQueue.appGroup().enqueue(capture)
@@ -76,6 +80,12 @@ final class ShareViewController: UIViewController {
             .compactMap(\.attachments).flatMap { $0 } ?? []
 
         for provider in providers {
+            // PDF first — a shared PDF can also expose a file URL, so check it before .url.
+            if provider.hasItemConformingToTypeIdentifier(UTType.pdf.identifier),
+               let data = try? await loadData(provider, UTType.pdf.identifier) {
+                let filename = try? ImageStore.appGroup().save(data, ext: "pdf")
+                return SharePayload(rawType: .pdf, url: nil, text: nil, imageFilename: filename, imageData: nil)
+            }
             if provider.hasItemConformingToTypeIdentifier(UTType.url.identifier),
                let url = try? await provider.loadItem(forTypeIdentifier: UTType.url.identifier) as? URL {
                 return SharePayload(rawType: .url, url: url, text: nil, imageFilename: nil, imageData: nil)

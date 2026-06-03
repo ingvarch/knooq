@@ -44,3 +44,15 @@ final class StubDateProvider: DateProvider, @unchecked Sendable {
     init(_ date: Date) { self.fixedDate = date }
     var now: Date { fixedDate }
 }
+
+/// Marks each text with the target language so translation direction is observable in tests.
+final class StubTranslator: TextTranslator, @unchecked Sendable {
+    private(set) var calls: [(texts: [String], from: String?, to: String)] = []
+    var error: Error?
+
+    func translate(_ texts: [String], from: String?, to: String) async throws -> [String] {
+        calls.append((texts, from, to))
+        if let error { throw error }
+        return texts.map { "\(to):\($0)" }
+    }
+}

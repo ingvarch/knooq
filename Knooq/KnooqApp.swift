@@ -1,4 +1,5 @@
 import SwiftUI
+import Translation
 import KnooqKit
 
 @main
@@ -22,7 +23,18 @@ struct ContentView: View {
     let services: AppServices
 
     var body: some View {
-        if services.isModelReady {
+        content
+            // Hosts the Translation session for the headless pipeline (see TranslationBridge).
+            .translationTask(services.translationBridge.config) { session in
+                await services.translationBridge.perform(session)
+            }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        if !services.hasOnboarded {
+            OnboardingView { codes in services.completeOnboarding(languageCodes: codes) }
+        } else if services.isModelReady {
             InboxView()
         } else {
             AvailabilityGateView(message: services.modelMessage)

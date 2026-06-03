@@ -24,6 +24,7 @@ public final class ItemProcessor: Sendable {
     @MainActor
     public func process(_ item: SavedItem) async {
         guard item.status == .pending else { return }
+        knooqLog("ItemProcessor: processing \(item.rawType.rawValue) item \(item.id)")
 
         let text: String
         do {
@@ -31,6 +32,7 @@ public final class ItemProcessor: Sendable {
         } catch {
             return fail(item, "Couldn't read content: \(Self.message(error))")
         }
+        knooqLog("ItemProcessor: extracted \(text.count) chars")
 
         guard text.count >= minTextLength else {
             return fail(item, "Too little text to analyze (\(text.count) chars)")
@@ -45,6 +47,7 @@ public final class ItemProcessor: Sendable {
             item.summary = analysis.summary
             item.status = .processed
             item.failureReason = nil
+            knooqLog("ItemProcessor: processed -> \(item.category?.rawValue ?? "?") \(item.tags)")
         } catch {
             fail(item, "AI analysis failed: \(Self.message(error))")
         }

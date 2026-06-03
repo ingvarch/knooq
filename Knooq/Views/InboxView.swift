@@ -10,6 +10,7 @@ struct InboxView: View {
 
     @State private var selectedCategory: ItemCategory?
     @State private var selectedTag: String?
+    @State private var showSettings = false
 
     private var filtered: [SavedItem] {
         ItemFilter.apply(items, category: selectedCategory, tag: selectedTag)
@@ -47,6 +48,16 @@ struct InboxView: View {
             }
             .listStyle(.plain)
             .navigationTitle("Inbox")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button { showSettings = true } label: {
+                        Image(systemName: "gearshape")
+                    }
+                }
+            }
+            .sheet(isPresented: $showSettings) {
+                SettingsView()
+            }
             .overlay {
                 if filtered.isEmpty {
                     ContentUnavailableView("Nothing saved yet",

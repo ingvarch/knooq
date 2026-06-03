@@ -51,6 +51,7 @@ final class FMAnalyzer: Analyzer {
 
     func analyze(_ text: String) async throws -> ItemAnalysis {
         let availability = SystemLanguageModel.default.availability
+        knooqLog("FMAnalyzer: availability = \(availability), input \(text.count) chars")
         guard case .available = availability else {
             throw FMError.modelUnavailable(availability)
         }
@@ -58,6 +59,7 @@ final class FMAnalyzer: Analyzer {
         let session = LanguageModelSession(instructions: instructions)
         let response = try await session.respond(to: text, generating: FMItemAnalysis.self)
         let fm = response.content
+        knooqLog("FMAnalyzer: got category=\(fm.category) tags=\(fm.tags)")
 
         return ItemAnalysis.validated(
             rawCategory: fm.category,

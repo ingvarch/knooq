@@ -10,22 +10,46 @@ import KnooqKit
 @Observable
 final class AppServices {
     let container: ModelContainer
+    let translationBridge: TranslationBridge
     private let processor: ItemProcessor
     private let nudgeScheduler: NudgeScheduler
     private var isRefreshing = false
     private var didRequestPermission = false
+    private var onboarding: OnboardingStore
 
     /// Apple Intelligence state for the UI gate.
     private(set) var isModelReady = false
     private(set) var modelMessage = ""
 
+    /// Whether the user finished onboarding (language setup).
+    private(set) var hasOnboarded = false
+
     init() {
         let container = KnooqStore.resilientContainer()
+        let bridge = TranslationBridge()
+        let store = OnboardingStore()
+
+        // Translate only the languages the user set up; otherwise FM runs directly.
+        let languages = Set(store.translationLanguageCodes)
+        let analyzer: Analyzer = languages.isEmpty
+            ? FMAnalyzer()
+            : TranslatingAnalyzer(base: FMAnalyzer(), translator: bridge, translatableLanguages: languages)
+
         self.container = container
-        self.processor = ItemProcessor(analyzer: FMAnalyzer(), extractor: CompositeTextExtractor())
+        self.translationBridge = bridge
+        self.onboarding = store
+        self.processor = ItemProcessor(analyzer: analyzer, extractor: CompositeTextExtractor())
         self.nudgeScheduler = NudgeScheduler(container: container)
+        self.hasOnboarded = store.hasCompletedOnboarding
+
         nudgeScheduler.registerBackgroundTask()
+        knooqLog("AppServices: init, translatable languages = \(languages.sorted())")
         checkAvailability()
+    }
+
+    func completeOnboarding(languageCodes: [String]) {
+        onboarding.complete(languageCodes: languageCodes)
+        hasOnboarded = true
     }
 
     func onLaunch() async {
@@ -45,6 +69,7 @@ final class AppServices {
         defer { isRefreshing = false }
 
         checkAvailability()
+        knooqLog("AppServices: refresh, modelReady = \(isModelReady)")
         importCaptures()
         if isModelReady {
             await processPendingItems()
@@ -75,6 +100,7 @@ final class AppServices {
     private func importCaptures() {
         let captures = (try? CaptureQueue.appGroup().drain()) ?? []
         guard !captures.isEmpty else { return }
+        knooqLog("AppServices: importing \(captures.count) capture(s)")
         let context = container.mainContext
         for capture in captures {
             let item = SavedItem(
@@ -98,7 +124,9 @@ final class AppServices {
     private func processPendingItems() async {
         let context = container.mainContext
         guard let items = try? context.fetch(FetchDescriptor<SavedItem>()) else { return }
+        let pending = items.filter { $0.status == .pending }.count
         let previouslyFailed = items.filter { $0.status == .failed }
+        knooqLog("AppServices: processing \(pending) pending, retrying \(previouslyFailed.count) failed")
         await processor.processAll(items)
         await processor.retryFailed(previouslyFailed)
         try? context.save()

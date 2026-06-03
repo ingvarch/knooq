@@ -31,8 +31,8 @@ struct CategoryView: View {
 
     @State private var sort = ItemSort()
 
-    private var items: [SavedItem] {
-        let filtered = all.filter { item in
+    private var filtered: [SavedItem] {
+        all.filter { item in
             switch route {
             case .all: return item.status == .processed
             case .processing: return item.status == .pending
@@ -40,7 +40,20 @@ struct CategoryView: View {
             case .category(let name): return item.status == .processed && item.category == name
             }
         }
-        return ItemSorting.sorted(filtered, by: sort)
+    }
+
+    /// Date-sorted views group by Today/Yesterday/month/year; Title sort is a flat list.
+    private var sections: [(title: String?, items: [SavedItem])] {
+        switch sort.field {
+        case .title:
+            return [(nil, ItemSorting.sorted(filtered, by: sort))]
+        case .dateCreated:
+            return DateGrouping.group(filtered, dateFor: { $0.createdAt }, now: .now, ascending: sort.order == .oldestFirst)
+                .map { ($0.title, $0.items) }
+        case .dateEdited:
+            return DateGrouping.group(filtered, dateFor: { ItemSorting.editedDate($0) }, now: .now, ascending: sort.order == .oldestFirst)
+                .map { ($0.title, $0.items) }
+        }
     }
 
     /// The folder name if this is a user-created (deletable) folder.
@@ -51,17 +64,23 @@ struct CategoryView: View {
 
     var body: some View {
         List {
-            ForEach(items) { item in
-                NavigationLink(value: item) { ItemCardView(item: item) }
-                    .swipeActions(edge: .trailing) {
-                        Button(role: .destructive) { context.delete(item) } label: {
-                            Label("Delete", systemImage: "trash")
-                        }
-                        Button { item.isArchived = true } label: {
-                            Label("Archive", systemImage: "archivebox")
-                        }
-                        .tint(.blue)
+            ForEach(sections, id: \.title) { section in
+                Section {
+                    ForEach(section.items) { item in
+                        NavigationLink(value: item) { ItemCardView(item: item) }
+                            .swipeActions(edge: .trailing) {
+                                Button(role: .destructive) { context.delete(item) } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                                Button { item.isArchived = true } label: {
+                                    Label("Archive", systemImage: "archivebox")
+                                }
+                                .tint(.blue)
+                            }
                     }
+                } header: {
+                    if let title = section.title { Text(title) }
+                }
             }
         }
         .navigationTitle(route.title)
@@ -70,7 +89,7 @@ struct CategoryView: View {
             ToolbarItem(placement: .topBarTrailing) { folderMenu }
         }
         .overlay {
-            if items.isEmpty {
+            if filtered.isEmpty {
                 ContentUnavailableView("Empty", systemImage: "folder",
                                        description: Text("Nothing here yet."))
             }

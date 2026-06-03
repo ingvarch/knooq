@@ -15,7 +15,7 @@ struct TagChipButton: View {
                 .strikethrough(state == false)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 7)
-                .background(state == true ? AnyShapeStyle(.tint) : AnyShapeStyle(.quaternary), in: Capsule())
+                .background(state == true ? AnyShapeStyle(.tint) : AnyShapeStyle(.quaternary), in: RoundedRectangle(cornerRadius: 8))
                 .foregroundStyle(state == true ? AnyShapeStyle(.white) : (state == false ? AnyShapeStyle(.secondary) : AnyShapeStyle(.primary)))
         }
         .buttonStyle(.plain)

@@ -73,8 +73,10 @@
 		8B2FEB9D3D8533581DBCF1A3 /* CaptureQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20053AC8618D042771A0782 /* CaptureQueueTests.swift */; };
 		8B3A7A6E90F6674784FB619A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C0DD017CBC30C3BBE2C12E68 /* Assets.xcassets */; };
 		8C0A08A5606BB68A63918A00 /* Categories.swift in Sources */ = {isa = PBXBuildFile; fileRef = D54711AAA8E5401A3DCC45B8 /* Categories.swift */; };
+		8FEC92AAB0598E07BA6E3D83 /* DateGroupingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14AEAEC18DFA93A624D07523 /* DateGroupingTests.swift */; };
 		93A5BE783EFA4F7544231086 /* ItemAnalysisValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036EBAF62486003CB390260D /* ItemAnalysisValidationTests.swift */; };
 		94B7C5B7610D273BFD1DFA22 /* ActionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54358BB9F6AC1A99DA8EE0E1 /* ActionViewController.swift */; };
+		94FD5082FF38AB4EBA5DBBFA /* DateGrouping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 735A632D08F58D0930EC9BA1 /* DateGrouping.swift */; };
 		97D5B6C2719A33A8FDA47EA7 /* OnboardingStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E14C6E15608DB61B141471B /* OnboardingStore.swift */; };
 		9C6B00463DE397DACFDA000D /* KnooqAction.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1CB64604CD0F7686726297F7 /* KnooqAction.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		9F764F90A097A812134F850C /* KnooqKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1258FB5BC333B7418BABDB8C /* KnooqKit.framework */; };
@@ -205,6 +207,7 @@
 		102AD9DCE3947D04A5BF7A4B /* Knooq.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Knooq.entitlements; sourceTree = "<group>"; };
 		11518C6360C5F20FCFEF72BC /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		1258FB5BC333B7418BABDB8C /* KnooqKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = KnooqKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		14AEAEC18DFA93A624D07523 /* DateGroupingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateGroupingTests.swift; sourceTree = "<group>"; };
 		15FA56271CAD8DFAB16921A9 /* Notifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifier.swift; sourceTree = "<group>"; };
 		174932869EE22AB667548654 /* TextTranslator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextTranslator.swift; sourceTree = "<group>"; };
 		1BE0F5D604C84F4CEA45FDC9 /* NudgeRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NudgeRunner.swift; sourceTree = "<group>"; };
@@ -242,6 +245,7 @@
 		6D8D8AEE496625F6EE6A2B84 /* ItemFilterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemFilterTests.swift; sourceTree = "<group>"; };
 		6FB4DBCE1BDA54997EEA26D5 /* NudgeScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NudgeScheduler.swift; sourceTree = "<group>"; };
 		720586C26720AD1F5858E2E4 /* ItemSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemSearch.swift; sourceTree = "<group>"; };
+		735A632D08F58D0930EC9BA1 /* DateGrouping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateGrouping.swift; sourceTree = "<group>"; };
 		77206546058608884B7AF211 /* AvailabilityGateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailabilityGateView.swift; sourceTree = "<group>"; };
 		77CF5D73ABFE7A1FA32F282B /* RemindersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindersView.swift; sourceTree = "<group>"; };
 		7BECB8B3BFB742BCE21FECA4 /* Stubs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stubs.swift; sourceTree = "<group>"; };
@@ -343,6 +347,7 @@
 			isa = PBXGroup;
 			children = (
 				9380D2CC059E97017FE75B19 /* CaptureTitle.swift */,
+				735A632D08F58D0930EC9BA1 /* DateGrouping.swift */,
 				E386F4B58C6591D8E6034A58 /* Folders.swift */,
 				CC59D1E4A834E6BBEDE6D99F /* ItemFilter.swift */,
 				86D0F5D091DC9835C36C4025 /* ItemProcessor.swift */,
@@ -363,6 +368,7 @@
 				B20053AC8618D042771A0782 /* CaptureQueueTests.swift */,
 				3B34516A79FCB2E7D705CED3 /* CaptureTitleTests.swift */,
 				AEA1B00F65555DEFC0BDBDFA /* CategoryStoreTests.swift */,
+				14AEAEC18DFA93A624D07523 /* DateGroupingTests.swift */,
 				DCD80C1F71379047BACD3049 /* ImageStoreTests.swift */,
 				036EBAF62486003CB390260D /* ItemAnalysisValidationTests.swift */,
 				6D8D8AEE496625F6EE6A2B84 /* ItemFilterTests.swift */,
@@ -812,6 +818,7 @@
 				F2969DB8C3BFFBC1F703456B /* CaptureTitle.swift in Sources */,
 				8C0A08A5606BB68A63918A00 /* Categories.swift in Sources */,
 				146D205C00A29DE958AA2255 /* CategoryStore.swift in Sources */,
+				94FD5082FF38AB4EBA5DBBFA /* DateGrouping.swift in Sources */,
 				1955BFC79B3C2A7A2C22BDEF /* DateProvider.swift in Sources */,
 				FBB061B9DA95428866030EBC /* Folders.swift in Sources */,
 				618CA9B99ECABC85AF9FEC3A /* ImageStore.swift in Sources */,
@@ -879,6 +886,7 @@
 				8B2FEB9D3D8533581DBCF1A3 /* CaptureQueueTests.swift in Sources */,
 				A8513A1447F3B8821D576CBF /* CaptureTitleTests.swift in Sources */,
 				C397A4F8FEACBC66B71C588B /* CategoryStoreTests.swift in Sources */,
+				8FEC92AAB0598E07BA6E3D83 /* DateGroupingTests.swift in Sources */,
 				6441494AB1F8640D790A4CC1 /* ImageStoreTests.swift in Sources */,
 				93A5BE783EFA4F7544231086 /* ItemAnalysisValidationTests.swift in Sources */,
 				78569AA73D279C1FDC5387A7 /* ItemFilterTests.swift in Sources */,

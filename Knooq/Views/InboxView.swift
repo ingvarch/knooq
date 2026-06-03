@@ -17,6 +17,7 @@ struct InboxView: View {
     @State private var searchText = ""
     @State private var foldersExpanded = true
     @State private var tagsExpanded = true
+    @State private var path = NavigationPath()
     @State private var customFolders: [String] = CategoryStore().customFolders
 
     private var processing: [SavedItem] { items.filter { $0.status == .pending } }
@@ -33,7 +34,7 @@ struct InboxView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             Group {
                 if searchText.isEmpty {
                     inboxList
@@ -140,24 +141,26 @@ struct InboxView: View {
         .textCase(nil)
     }
 
-    /// Tag "cloud": navigation chips wrapped in a flow layout.
+    /// Tag "cloud": tappable chips wrapped in a flow layout (buttons, so no list chevrons).
     private var tagCloud: some View {
         FlowLayout(spacing: 8) {
-            NavigationLink(value: TagSelection.allTagged) { cloudChip("All Tags") }
+            cloudChip("All Tags") { path.append(TagSelection.allTagged) }
             ForEach(allTags, id: \.self) { tag in
-                NavigationLink(value: TagSelection.includingTag(tag)) { cloudChip("#\(tag)") }
+                cloudChip("#\(tag)") { path.append(TagSelection.includingTag(tag)) }
             }
         }
-        .buttonStyle(.plain)
     }
 
-    private func cloudChip(_ label: String) -> some View {
-        Text(label)
-            .font(.caption.weight(.medium))
-            .padding(.horizontal, 12)
-            .padding(.vertical, 7)
-            .background(.quaternary, in: Capsule())
-            .foregroundStyle(.primary)
+    private func cloudChip(_ label: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(label)
+                .font(.caption.weight(.medium))
+                .padding(.horizontal, 12)
+                .padding(.vertical, 7)
+                .background(.quaternary, in: RoundedRectangle(cornerRadius: 8))
+                .foregroundStyle(.primary)
+        }
+        .buttonStyle(.plain)
     }
 
     private func addFolder() {

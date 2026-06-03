@@ -7,6 +7,7 @@ enum FolderRoute: Hashable {
     case all
     case processing
     case needsAttention
+    case archived
     case category(String)
 
     var title: String {
@@ -14,6 +15,7 @@ enum FolderRoute: Hashable {
         case .all: "All"
         case .processing: "Processing"
         case .needsAttention: "Needs attention"
+        case .archived: "Archived"
         case .category(let name): name
         }
     }
@@ -25,8 +27,7 @@ struct CategoryView: View {
 
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
-    @Query(filter: #Predicate<SavedItem> { !$0.isArchived },
-           sort: \SavedItem.createdAt, order: .reverse)
+    @Query(sort: \SavedItem.createdAt, order: .reverse)
     private var all: [SavedItem]
 
     @State private var sort = ItemSort()
@@ -34,10 +35,11 @@ struct CategoryView: View {
     private var filtered: [SavedItem] {
         all.filter { item in
             switch route {
-            case .all: return item.status == .processed
-            case .processing: return item.status == .pending
-            case .needsAttention: return item.status == .failed
-            case .category(let name): return item.status == .processed && item.category == name
+            case .archived: return item.isArchived
+            case .all: return !item.isArchived && item.status == .processed
+            case .processing: return !item.isArchived && item.status == .pending
+            case .needsAttention: return !item.isArchived && item.status == .failed
+            case .category(let name): return !item.isArchived && item.status == .processed && item.category == name
             }
         }
     }
@@ -72,8 +74,9 @@ struct CategoryView: View {
                                 Button(role: .destructive) { context.delete(item) } label: {
                                     Label("Delete", systemImage: "trash")
                                 }
-                                Button { item.isArchived = true } label: {
-                                    Label("Archive", systemImage: "archivebox")
+                                Button { item.isArchived.toggle() } label: {
+                                    Label(item.isArchived ? "Unarchive" : "Archive",
+                                          systemImage: item.isArchived ? "tray.and.arrow.up" : "archivebox")
                                 }
                                 .tint(.blue)
                             }

@@ -8,6 +8,9 @@ struct InboxView: View {
            sort: \SavedItem.createdAt, order: .reverse)
     private var items: [SavedItem]
 
+    @Query(filter: #Predicate<SavedItem> { $0.isArchived })
+    private var archivedItems: [SavedItem]
+
     /// Pull-to-refresh action — re-imports and retries failed items (Needs attention).
     var onRefresh: () async -> Void = {}
 
@@ -106,6 +109,19 @@ struct InboxView: View {
                                 Button(role: .destructive) { deleteFolder(folder.name) } label: {
                                     Label("Delete", systemImage: "trash")
                                 }
+                            }
+                        }
+                    }
+                    if !archivedItems.isEmpty {
+                        NavigationLink(value: FolderRoute.archived) {
+                            Label {
+                                HStack {
+                                    Text("Archived")
+                                    Spacer()
+                                    Text("\(archivedItems.count)").foregroundStyle(.secondary)
+                                }
+                            } icon: {
+                                Image(systemName: "archivebox")
                             }
                         }
                     }

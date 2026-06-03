@@ -25,8 +25,12 @@ struct InboxView: View {
     var body: some View {
         NavigationStack {
             List {
-                if !processing.isEmpty {
-                    Section("Processing") {
+                Section("Processing") {
+                    if processing.isEmpty {
+                        Text("Nothing processing right now")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    } else {
                         ForEach(processing) { item in
                             NavigationLink(value: item) { ItemCardView(item: item) }
                                 .swipeActions(edge: .trailing) { deleteButton(item) }
@@ -34,8 +38,12 @@ struct InboxView: View {
                     }
                 }
 
-                if !needsAttention.isEmpty {
-                    Section("Needs attention") {
+                Section("Needs attention") {
+                    if needsAttention.isEmpty {
+                        Text("No issues")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    } else {
                         ForEach(needsAttention) { item in
                             NavigationLink(value: item) { ItemCardView(item: item) }
                                 .swipeActions(edge: .trailing) {
@@ -68,13 +76,6 @@ struct InboxView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button { showSettings = true } label: { Image(systemName: "gearshape") }
-                }
-            }
-            .overlay {
-                if items.isEmpty {
-                    ContentUnavailableView("Nothing saved yet",
-                                           systemImage: "tray",
-                                           description: Text("Share a link, image, or text to Knooq."))
                 }
             }
             .navigationDestination(for: ItemCategory.self) { category in

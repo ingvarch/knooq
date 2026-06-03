@@ -68,6 +68,7 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: app.knooq.ios
         GENERATE_INFOPLIST_FILE: NO
         TARGETED_DEVICE_FAMILY: "1"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         # Swift 5 language mode for the app/UI layer only: Apple's Translation framework
         # (TranslationSession.prepareTranslation) isn't Sendable-annotated for Swift 6 mode.
         # KnooqKit (all domain logic + tests) stays Swift 6 with complete checking.

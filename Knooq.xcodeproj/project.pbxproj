@@ -51,6 +51,7 @@
 		8661679BE1DCD1B90C3C4D84 /* AppServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FE65EAF7F85E9406485A25C /* AppServices.swift */; };
 		87973BCE54AB23F7FF0511D0 /* CaptureQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526B965F1B59F705C170AB15 /* CaptureQueue.swift */; };
 		8B2FEB9D3D8533581DBCF1A3 /* CaptureQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20053AC8618D042771A0782 /* CaptureQueueTests.swift */; };
+		8B3A7A6E90F6674784FB619A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C0DD017CBC30C3BBE2C12E68 /* Assets.xcassets */; };
 		93A5BE783EFA4F7544231086 /* ItemAnalysisValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036EBAF62486003CB390260D /* ItemAnalysisValidationTests.swift */; };
 		97D5B6C2719A33A8FDA47EA7 /* OnboardingStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E14C6E15608DB61B141471B /* OnboardingStore.swift */; };
 		9F764F90A097A812134F850C /* KnooqKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1258FB5BC333B7418BABDB8C /* KnooqKit.framework */; };
@@ -205,6 +206,7 @@
 		AD65A34466775F3C489BDA1C /* RawType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawType.swift; sourceTree = "<group>"; };
 		B20053AC8618D042771A0782 /* CaptureQueueTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureQueueTests.swift; sourceTree = "<group>"; };
 		B4B0054A6E4FCECF1166BF25 /* Knooq.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Knooq.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C0DD017CBC30C3BBE2C12E68 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C196E73C7747E9A57FE0ACCE /* URLTextExtractorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLTextExtractorTests.swift; sourceTree = "<group>"; };
 		C5C99A9673AD13314443C9AD /* NudgeEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NudgeEngine.swift; sourceTree = "<group>"; };
 		C7E28893B215C7AF466E9600 /* ItemStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemStatus.swift; sourceTree = "<group>"; };
@@ -394,6 +396,7 @@
 			isa = PBXGroup;
 			children = (
 				2FE65EAF7F85E9406485A25C /* AppServices.swift */,
+				C0DD017CBC30C3BBE2C12E68 /* Assets.xcassets */,
 				CB4F25370E3B786C1E2A9736 /* Info.plist */,
 				102AD9DCE3947D04A5BF7A4B /* Knooq.entitlements */,
 				AC10E174C5D8EDFB9CFEEE5E /* KnooqApp.swift */,
@@ -629,6 +632,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8B3A7A6E90F6674784FB619A /* Assets.xcassets in Resources */,
 				780A6468F56D99A5E0D893C0 /* Readability.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

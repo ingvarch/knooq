@@ -18,8 +18,8 @@ struct InboxView: View {
     @State private var showNewFolder = false
     @State private var newFolderName = ""
     @State private var searchText = ""
-    @State private var foldersExpanded = true
-    @State private var tagsExpanded = true
+    @AppStorage("knooq.ui.foldersExpanded") private var foldersExpanded = true
+    @AppStorage("knooq.ui.tagsExpanded") private var tagsExpanded = true
     @State private var path = NavigationPath()
     @State private var customFolders: [String] = CategoryStore().customFolders
 

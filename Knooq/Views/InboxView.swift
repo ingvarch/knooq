@@ -8,67 +8,96 @@ struct InboxView: View {
            sort: \SavedItem.createdAt, order: .reverse)
     private var items: [SavedItem]
 
-    @State private var selectedCategory: ItemCategory?
-    @State private var selectedTag: String?
     @State private var showSettings = false
 
-    private var filtered: [SavedItem] {
-        ItemFilter.apply(items, category: selectedCategory, tag: selectedTag)
+    private var processing: [SavedItem] { items.filter { $0.status == .pending } }
+    private var needsAttention: [SavedItem] { items.filter { $0.status == .failed } }
+    private var processed: [SavedItem] { items.filter { $0.status == .processed } }
+
+    /// Categories that currently contain at least one processed item, in canonical order.
+    private var folders: [(category: ItemCategory, count: Int)] {
+        ItemCategory.allCases.compactMap { category in
+            let count = processed.filter { $0.category == category }.count
+            return count > 0 ? (category, count) : nil
+        }
     }
 
     var body: some View {
         NavigationStack {
             List {
-                FilterChipsView(
-                    tags: ItemFilter.allTags(items),
-                    selectedCategory: $selectedCategory,
-                    selectedTag: $selectedTag
-                )
-                .listRowInsets(EdgeInsets())
-                .listRowSeparator(.hidden)
-
-                ForEach(filtered) { item in
-                    NavigationLink(value: item) {
-                        ItemCardView(item: item)
+                if !processing.isEmpty {
+                    Section("Processing") {
+                        ForEach(processing) { item in
+                            NavigationLink(value: item) { ItemCardView(item: item) }
+                                .swipeActions(edge: .trailing) { deleteButton(item) }
+                        }
                     }
-                    .swipeActions(edge: .trailing) {
-                        Button(role: .destructive) {
-                            context.delete(item)
-                        } label: {
-                            Label("Delete", systemImage: "trash")
+                }
+
+                if !needsAttention.isEmpty {
+                    Section("Needs attention") {
+                        ForEach(needsAttention) { item in
+                            NavigationLink(value: item) { ItemCardView(item: item) }
+                                .swipeActions(edge: .trailing) {
+                                    deleteButton(item)
+                                    archiveButton(item)
+                                }
                         }
-                        Button {
-                            item.isArchived = true
-                        } label: {
-                            Label("Archive", systemImage: "archivebox")
+                    }
+                }
+
+                if !folders.isEmpty {
+                    Section("Folders") {
+                        ForEach(folders, id: \.category) { folder in
+                            NavigationLink(value: folder.category) {
+                                Label {
+                                    HStack {
+                                        Text(folder.category.rawValue)
+                                        Spacer()
+                                        Text("\(folder.count)").foregroundStyle(.secondary)
+                                    }
+                                } icon: {
+                                    Image(systemName: folder.category.symbol)
+                                }
+                            }
                         }
-                        .tint(.blue)
                     }
                 }
             }
-            .listStyle(.plain)
             .navigationTitle("Inbox")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button { showSettings = true } label: {
-                        Image(systemName: "gearshape")
-                    }
+                    Button { showSettings = true } label: { Image(systemName: "gearshape") }
                 }
             }
-            .sheet(isPresented: $showSettings) {
-                SettingsView()
-            }
             .overlay {
-                if filtered.isEmpty {
+                if items.isEmpty {
                     ContentUnavailableView("Nothing saved yet",
                                            systemImage: "tray",
                                            description: Text("Share a link, image, or text to Knooq."))
                 }
             }
+            .navigationDestination(for: ItemCategory.self) { category in
+                CategoryView(category: category)
+            }
             .navigationDestination(for: SavedItem.self) { item in
                 ItemDetailView(item: item)
             }
+            .sheet(isPresented: $showSettings) { SettingsView() }
         }
+    }
+
+    private func deleteButton(_ item: SavedItem) -> some View {
+        Button(role: .destructive) { context.delete(item) } label: {
+            Label("Delete", systemImage: "trash")
+        }
+    }
+
+    private func archiveButton(_ item: SavedItem) -> some View {
+        Button { item.isArchived = true } label: {
+            Label("Archive", systemImage: "archivebox")
+        }
+        .tint(.blue)
     }
 }
 
@@ -102,70 +131,6 @@ struct ItemCardView: View {
                 .padding(.trailing, 4)
         }
         .padding(.vertical, 4)
-    }
-}
-
-/// Horizontal category + tag filter chips with single-select toggle.
-struct FilterChipsView: View {
-    let tags: [String]
-    @Binding var selectedCategory: ItemCategory?
-    @Binding var selectedTag: String?
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    FilterChip(label: "All", systemImage: "tray.full",
-                               isOn: selectedCategory == nil) {
-                        selectedCategory = nil
-                    }
-                    ForEach(ItemCategory.allCases, id: \.self) { category in
-                        FilterChip(label: category.rawValue,
-                                   systemImage: category.symbol,
-                                   isOn: selectedCategory == category) {
-                            selectedCategory = selectedCategory == category ? nil : category
-                        }
-                    }
-                }
-                .padding(.horizontal)
-            }
-            if !tags.isEmpty {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        ForEach(tags, id: \.self) { tag in
-                            FilterChip(label: "#\(tag)", systemImage: nil,
-                                       isOn: selectedTag == tag) {
-                                selectedTag = selectedTag == tag ? nil : tag
-                            }
-                        }
-                    }
-                    .padding(.horizontal)
-                }
-            }
-        }
-        .padding(.vertical, 4)
-    }
-}
-
-struct FilterChip: View {
-    let label: String
-    let systemImage: String?
-    let isOn: Bool
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            HStack(spacing: 4) {
-                if let systemImage { Image(systemName: systemImage) }
-                Text(label)
-            }
-            .font(.caption.weight(.medium))
-            .padding(.horizontal, 10)
-            .padding(.vertical, 6)
-            .background(isOn ? AnyShapeStyle(.tint) : AnyShapeStyle(.quaternary), in: Capsule())
-            .foregroundStyle(isOn ? .white : .primary)
-        }
-        .buttonStyle(.plain)
     }
 }
 

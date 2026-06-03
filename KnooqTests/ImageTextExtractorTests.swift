@@ -43,11 +43,13 @@ import UIKit
         }
     }
 
-    @Test func blankImageReturnsEmpty() async throws {
+    @Test func blankImageReturnsDescriptionNotEmpty() async throws {
+        // A blank image has no text, but extraction still returns a (label/fallback) description
+        // so FM has something to summarize.
         let store = tempStore()
         let filename = try store.save(renderImage(text: ""))
         let extractor = ImageTextExtractor(store: store)
         let text = try await extractor.extract(from: filename)
-        #expect(text.isEmpty)
+        #expect(!text.isEmpty)
     }
 }

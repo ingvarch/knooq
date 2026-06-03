@@ -96,6 +96,13 @@ struct InboxView: View {
                                 Image(systemName: categorySymbol(folder.name))
                             }
                         }
+                        .swipeActions(edge: .trailing) {
+                            if customFolders.contains(folder.name) {
+                                Button(role: .destructive) { deleteFolder(folder.name) } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
+                        }
                     }
                 }
             } header: {
@@ -158,6 +165,17 @@ struct InboxView: View {
         store.add(newFolderName)
         customFolders = store.customFolders
         newFolderName = ""
+    }
+
+    /// Delete a user-created folder; its items move to Other so they aren't lost.
+    private func deleteFolder(_ name: String) {
+        for item in items where item.category == name {
+            item.category = Categories.other
+        }
+        try? context.save()
+        var store = CategoryStore()
+        store.remove(name)
+        customFolders = store.customFolders
     }
 
     private func statusRow(_ route: FolderRoute, _ title: String, _ symbol: String, count: Int) -> some View {

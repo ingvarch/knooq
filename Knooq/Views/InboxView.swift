@@ -20,6 +20,7 @@ struct InboxView: View {
     private var processing: [SavedItem] { items.filter { $0.status == .pending } }
     private var needsAttention: [SavedItem] { items.filter { $0.status == .failed } }
     private var processed: [SavedItem] { items.filter { $0.status == .processed } }
+    private var allTags: [String] { ItemFilter.allTags(processed) }
 
     /// Folder names to show (Notes + custom + any used category), each with its processed count.
     private var folders: [(name: String, count: Int)] {
@@ -50,6 +51,9 @@ struct InboxView: View {
             }
             .navigationDestination(for: FolderRoute.self) { route in
                 CategoryView(route: route)
+            }
+            .navigationDestination(for: TagSelection.self) { selection in
+                TagFilterView(initial: selection)
             }
             .navigationDestination(for: SavedItem.self) { item in
                 ItemDetailView(item: item)
@@ -86,6 +90,19 @@ struct InboxView: View {
                             }
                         } icon: {
                             Image(systemName: categorySymbol(folder.name))
+                        }
+                    }
+                }
+            }
+
+            if !allTags.isEmpty {
+                Section("Tags") {
+                    NavigationLink(value: TagSelection.allTagged) {
+                        Label("All Tags", systemImage: "tag")
+                    }
+                    ForEach(allTags, id: \.self) { tag in
+                        NavigationLink(value: TagSelection.includingTag(tag)) {
+                            Label("#\(tag)", systemImage: "number")
                         }
                     }
                 }

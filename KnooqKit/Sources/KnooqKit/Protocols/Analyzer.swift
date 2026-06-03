@@ -17,7 +17,8 @@ public struct ItemAnalysis: Sendable, Equatable {
 
 extension ItemAnalysis {
     /// Builds a validated analysis from raw model output: category snapped to the fixed set,
-    /// tags lowercased and capped. Single place enforcing these rules (DRY), so it is unit-tested
+    /// tags lowercased, whitespace collapsed to hyphens (no spaces in tags), blanks dropped,
+    /// and capped. Single place enforcing these rules (DRY), so it is unit-tested
     /// independently of the model.
     public static func validated(
         rawCategory: String,
@@ -27,9 +28,13 @@ extension ItemAnalysis {
         summary: String,
         maxTags: Int = 3
     ) -> ItemAnalysis {
-        ItemAnalysis(
+        let tags = rawTags
+            .map { $0.lowercased().split(whereSeparator: \.isWhitespace).joined(separator: "-") }
+            .filter { !$0.isEmpty }
+            .prefix(maxTags)
+        return ItemAnalysis(
             category: Categories.validated(rawCategory, allowed: allowed),
-            tags: Array(rawTags.map { $0.lowercased() }.prefix(maxTags)),
+            tags: Array(tags),
             title: title,
             summary: summary
         )

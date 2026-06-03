@@ -8,7 +8,7 @@ struct FMItemAnalysis {
     @Guide(description: "The single best-fitting folder name for this content, taken from the list in the instructions")
     var category: String
 
-    @Guide(description: "Exactly 3 short lowercase tags describing the content")
+    @Guide(description: "Exactly 3 short lowercase tags describing the content. Each tag is a single token with no spaces; join multi-word tags with a hyphen (e.g. machine-learning)")
     var tags: [String]
 
     var title: String
@@ -49,7 +49,7 @@ final class FMAnalyzer: Analyzer {
         You are a content categorization assistant. Analyze the provided text and:
         1. Choose the single best-fitting folder for this content from this list: \(allowed.joined(separator: ", ")).
            Prefer a folder the user already has. If nothing fits well, use \(Categories.other).
-        2. Generate exactly 3 relevant lowercase tags.
+        2. Generate exactly 3 relevant lowercase tags. Never put a space in a tag; join multi-word tags with a hyphen (e.g. "machine-learning").
         3. Create a concise, descriptive title.
         4. Write the summary in this exact shape:
            - First line: "TL;DR: " followed by one short sentence capturing the gist.

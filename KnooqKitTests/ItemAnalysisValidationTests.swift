@@ -29,6 +29,24 @@ import Testing
         #expect(a.tags == ["one", "two", "three"])
     }
 
+    @Test func spacesBecomeHyphens() {
+        let a = ItemAnalysis.validated(
+            rawCategory: "Idea", allowed: allowed,
+            rawTags: ["Machine Learning", "  swift  ", "data   science"],
+            title: "t", summary: "s"
+        )
+        #expect(a.tags == ["machine-learning", "swift", "data-science"])
+    }
+
+    @Test func blankTagsDropped() {
+        let a = ItemAnalysis.validated(
+            rawCategory: "Idea", allowed: allowed,
+            rawTags: ["   ", "swift", ""],
+            title: "t", summary: "s"
+        )
+        #expect(a.tags == ["swift"])
+    }
+
     @Test func keepsTitleAndSummary() {
         let a = ItemAnalysis.validated(rawCategory: "Tool", allowed: allowed, rawTags: ["x"], title: "Title", summary: "Sum.")
         #expect(a.title == "Title")

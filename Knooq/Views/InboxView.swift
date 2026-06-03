@@ -15,6 +15,8 @@ struct InboxView: View {
     @State private var showNewFolder = false
     @State private var newFolderName = ""
     @State private var searchText = ""
+    @State private var foldersExpanded = true
+    @State private var tagsExpanded = true
     @State private var customFolders: [String] = CategoryStore().customFolders
 
     private var processing: [SavedItem] { items.filter { $0.status == .pending } }
@@ -77,39 +79,78 @@ struct InboxView: View {
                 statusRow(.needsAttention, "Needs attention", "exclamationmark.triangle", count: needsAttention.count)
             }
 
-            Section("Folders") {
-                NavigationLink(value: FolderRoute.all) {
-                    Label("All", systemImage: "tray.full")
-                }
-                ForEach(folders, id: \.name) { folder in
-                    NavigationLink(value: FolderRoute.category(folder.name)) {
-                        Label {
-                            HStack {
-                                Text(folder.name)
-                                Spacer()
-                                Text("\(folder.count)").foregroundStyle(.secondary)
+            Section {
+                if foldersExpanded {
+                    NavigationLink(value: FolderRoute.all) {
+                        Label("All", systemImage: "tray.full")
+                    }
+                    ForEach(folders, id: \.name) { folder in
+                        NavigationLink(value: FolderRoute.category(folder.name)) {
+                            Label {
+                                HStack {
+                                    Text(folder.name)
+                                    Spacer()
+                                    Text("\(folder.count)").foregroundStyle(.secondary)
+                                }
+                            } icon: {
+                                Image(systemName: categorySymbol(folder.name))
                             }
-                        } icon: {
-                            Image(systemName: categorySymbol(folder.name))
                         }
                     }
                 }
+            } header: {
+                sectionHeader("Folders", $foldersExpanded)
             }
 
             if !allTags.isEmpty {
-                Section("Tags") {
-                    NavigationLink(value: TagSelection.allTagged) {
-                        Label("All Tags", systemImage: "tag")
-                    }
-                    ForEach(allTags, id: \.self) { tag in
-                        NavigationLink(value: TagSelection.includingTag(tag)) {
-                            Label("#\(tag)", systemImage: "number")
-                        }
-                    }
+                Section {
+                    if tagsExpanded { tagCloud }
+                } header: {
+                    sectionHeader("Tags", $tagsExpanded)
                 }
             }
         }
         .refreshable { await onRefresh() }
+    }
+
+    private func sectionHeader(_ title: String, _ expanded: Binding<Bool>) -> some View {
+        Button {
+            withAnimation(.snappy) { expanded.wrappedValue.toggle() }
+        } label: {
+            HStack {
+                Text(title)
+                    .font(.title3.bold())
+                    .foregroundStyle(.primary)
+                Spacer()
+                Image(systemName: "chevron.down")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .rotationEffect(.degrees(expanded.wrappedValue ? 0 : -90))
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .textCase(nil)
+    }
+
+    /// Tag "cloud": navigation chips wrapped in a flow layout.
+    private var tagCloud: some View {
+        FlowLayout(spacing: 8) {
+            NavigationLink(value: TagSelection.allTagged) { cloudChip("All Tags") }
+            ForEach(allTags, id: \.self) { tag in
+                NavigationLink(value: TagSelection.includingTag(tag)) { cloudChip("#\(tag)") }
+            }
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func cloudChip(_ label: String) -> some View {
+        Text(label)
+            .font(.caption.weight(.medium))
+            .padding(.horizontal, 12)
+            .padding(.vertical, 7)
+            .background(.quaternary, in: Capsule())
+            .foregroundStyle(.primary)
     }
 
     private func addFolder() {

@@ -45,8 +45,14 @@ final class URLTextExtractor: NSObject, @unchecked Sendable {
         }
     }
 
+    // SPA pages render the article via JS after `didFinish`. Retry the content read a few
+    // times before falling back to meta tags, so JS-rendered articles aren't missed.
+    private static let contentMinLength = 200
+    private static let maxContentAttempts = 6
+    private static let retryDelay: Duration = .milliseconds(600)
+
     @MainActor
-    private func runReadability() {
+    private func runReadability(attempt: Int = 0) {
         guard let webView else { return }
         guard let jsURL = Bundle.main.url(forResource: "Readability", withExtension: "js"),
               let readabilityJS = try? String(contentsOf: jsURL, encoding: .utf8) else {
@@ -54,30 +60,55 @@ final class URLTextExtractor: NSObject, @unchecked Sendable {
             return
         }
 
-        let script = """
+        // Best real content: Readability article, else rendered body text. "" = nothing yet.
+        let contentScript = """
         \(readabilityJS)
         (function() {
-            function meta(sel) { var e = document.querySelector(sel); return e ? (e.content || "") : ""; }
             try {
                 var article = new Readability(document.cloneNode(true)).parse();
-                if (article && article.textContent && article.textContent.trim().length > 50) {
+                if (article && article.textContent && article.textContent.trim().length > \(Self.contentMinLength)) {
                     return article.textContent;
                 }
             } catch (e) {}
-            // Fallback for SPA / login-walled pages (Instagram, YouTube, X): OG + meta tags.
-            var parts = [
+            var body = document.body ? document.body.innerText : "";
+            if (body.trim().length > \(Self.contentMinLength)) { return body; }
+            return "";
+        })();
+        """
+
+        webView.evaluateJavaScript(contentScript) { [weak self] result, error in
+            guard let self else { return }
+            if let error { self.fail(error); return }
+            let text = (result as? String) ?? ""
+            if !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                self.succeed(text)
+            } else if attempt + 1 < Self.maxContentAttempts {
+                Task { @MainActor in
+                    try? await Task.sleep(for: Self.retryDelay)
+                    self.runReadability(attempt: attempt + 1)
+                }
+            } else {
+                self.runMetaFallback()  // truly empty SPA / login wall
+            }
+        }
+    }
+
+    // Last resort for pages with no readable body (login-walled SPAs): OG + meta tags.
+    @MainActor
+    private func runMetaFallback() {
+        guard let webView else { return }
+        let script = """
+        (function() {
+            function meta(sel) { var e = document.querySelector(sel); return e ? (e.content || "") : ""; }
+            return [
                 document.title || "",
                 meta('meta[property="og:title"]'),
                 meta('meta[property="og:description"]'),
                 meta('meta[name="description"]'),
                 meta('meta[property="og:site_name"]'),
-            ];
-            var body = document.body ? document.body.innerText : "";
-            if (body.trim().length > parts.join(" ").trim().length) { parts.push(body); }
-            return parts.filter(Boolean).join("\\n");
+            ].filter(Boolean).join("\\n");
         })();
         """
-
         webView.evaluateJavaScript(script) { [weak self] result, error in
             if let error {
                 self?.fail(error)

@@ -84,10 +84,10 @@ import Foundation
     }
 
     @Test func truncatesToMaxLength() async {
-        let (proc, _, analyzer) = makeProcessor(extractedText: String(repeating: "a", count: 5000))
+        let (proc, _, analyzer) = makeProcessor(extractedText: String(repeating: "a", count: 9000))
         let item = SavedItem(rawType: .text)
         await proc.process(item)
-        #expect(analyzer.receivedText?.count == 4000)
+        #expect(analyzer.receivedText?.count == 8000)
     }
 
     @Test func retryFailedReprocesses() async {

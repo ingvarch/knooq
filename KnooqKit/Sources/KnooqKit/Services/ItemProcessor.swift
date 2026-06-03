@@ -20,7 +20,7 @@ public final class ItemProcessor: Sendable {
         analyzer: Analyzer,
         extractor: TextExtractor,
         minTextLength: Int = 20,
-        maxTextLength: Int = 4000,
+        maxTextLength: Int = 8000,
         timeoutSeconds: Double = 90
     ) {
         self.analyzer = analyzer

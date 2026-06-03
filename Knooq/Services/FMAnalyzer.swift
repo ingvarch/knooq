@@ -13,8 +13,11 @@ struct FMItemAnalysis {
 
     var title: String
 
-    @Guide(description: "Formatted as: a line starting with 'TL;DR: ' and one concise sentence, then a blank line, then 3 to 5 bullet points, each on its own line starting with '• ', covering the key details and takeaways.")
-    var summary: String
+    @Guide(description: "One concise sentence capturing the gist of the content (the TL;DR).")
+    var tldr: String
+
+    @Guide(description: "3 to 5 bullet points, each a key detail or useful takeaway from the content. Each is a full, self-contained sentence with no leading bullet character.")
+    var keyPoints: [String]
 }
 
 /// Production Analyzer backed by the on-device Foundation Model.
@@ -51,11 +54,9 @@ final class FMAnalyzer: Analyzer {
            Prefer a folder the user already has. If nothing fits well, use \(Categories.other).
         2. Generate exactly 3 relevant lowercase tags. Never put a space in a tag; join multi-word tags with a hyphen (e.g. "machine-learning").
         3. Create a concise, descriptive title.
-        4. Write the summary in this exact shape:
-           - First line: "TL;DR: " followed by one short sentence capturing the gist.
-           - Then a blank line.
-           - Then 3 to 5 bullet points, each on its own line starting with "• ", each a key detail or takeaway.
-        Always use this TL;DR + bullets format. Focus on the most useful details of the content.
+        4. Write a one-sentence TL;DR capturing the gist.
+        5. Write 3 to 5 key points, each a full sentence covering a key detail or useful takeaway.
+        Summarize the actual article content, not the website or app it came from.
         """
     }
 
@@ -84,7 +85,7 @@ final class FMAnalyzer: Analyzer {
             allowed: allowed,
             rawTags: fm.tags,
             title: fm.title,
-            summary: fm.summary
+            summary: ItemSummary.format(tldr: fm.tldr, keyPoints: fm.keyPoints)
         )
     }
 }

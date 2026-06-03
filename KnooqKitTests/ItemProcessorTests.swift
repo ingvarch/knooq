@@ -26,9 +26,27 @@ import Foundation
         await proc.process(item)
         #expect(item.status == .processed)
         #expect(item.category == "Article")
-        #expect(item.tags == ["t"])
+        #expect(item.tags == ["note", "t"])  // source tag prepended (text -> note)
         #expect(item.title == "Title")
         #expect(item.summary == "Sum")
+    }
+
+    @Test func prependsPlatformSourceTagForURL() async {
+        let (proc, _, _) = makeProcessor(
+            analysis: ItemAnalysis(category: "Article", tags: ["recipe", "vegan"], title: "T", summary: "S")
+        )
+        let item = SavedItem(rawType: .url, rawURL: URL(string: "https://instagram.com/p/abc"))
+        await proc.process(item)
+        #expect(item.tags == ["instagram", "recipe", "vegan"])
+    }
+
+    @Test func sourceTagDedupedAndCappedAtThree() async {
+        let (proc, _, _) = makeProcessor(
+            analysis: ItemAnalysis(category: "Article", tags: ["instagram", "recipe", "vegan"], title: "T", summary: "S")
+        )
+        let item = SavedItem(rawType: .url, rawURL: URL(string: "https://instagram.com/p/abc"))
+        await proc.process(item)
+        #expect(item.tags == ["instagram", "recipe", "vegan"])
     }
 
     @Test func failedWhenTextTooShort() async {

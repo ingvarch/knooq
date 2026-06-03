@@ -55,7 +55,8 @@ public final class ItemProcessor: Sendable {
             }
 
             if !item.userCategorized { item.category = analysis.category }
-            item.tags = analysis.tags
+            let source = SourceTag.for(rawType: item.rawType, rawURL: item.rawURL)
+            item.tags = SourceTag.compose(source: source, fmTags: analysis.tags, max: 3)
             if !item.userTitled { item.title = analysis.title }
             // FM writes its own summary; the user's note (item.note) is never touched.
             item.summary = analysis.summary

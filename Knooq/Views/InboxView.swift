@@ -39,8 +39,9 @@ struct InboxView: View {
                     SearchResultsView(query: searchText, items: items)
                 }
             }
-            .navigationTitle(searchText.isEmpty ? "Inbox" : "Search")
-            .safeAreaInset(edge: .bottom) { searchBar }
+            .navigationTitle("Inbox")
+            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search")
+            .scrollDismissesKeyboard(.immediately)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button { showNewFolder = true } label: { Image(systemName: "folder.badge.plus") }
@@ -109,26 +110,6 @@ struct InboxView: View {
             }
         }
         .refreshable { await onRefresh() }
-    }
-
-    private var searchBar: some View {
-        HStack(spacing: 8) {
-            Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
-            TextField("Search", text: $searchText)
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-            if !searchText.isEmpty {
-                Button { searchText = "" } label: {
-                    Image(systemName: "xmark.circle.fill").foregroundStyle(.secondary)
-                }
-            }
-        }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 10)
-        .background(.regularMaterial, in: Capsule())
-        .overlay(Capsule().strokeBorder(.quaternary))
-        .padding(.horizontal)
-        .padding(.bottom, 6)
     }
 
     private func addFolder() {

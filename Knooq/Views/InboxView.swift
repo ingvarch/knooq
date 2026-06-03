@@ -45,6 +45,10 @@ struct InboxView: View {
             .navigationTitle("Inbox")
             .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search")
             .scrollDismissesKeyboard(.immediately)
+            .onChange(of: path) { _, _ in
+                // A folder may have been deleted from its detail menu; re-read custom folders on return.
+                customFolders = CategoryStore().customFolders
+            }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button { showNewFolder = true } label: { Image(systemName: "folder.badge.plus") }

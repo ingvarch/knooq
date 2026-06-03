@@ -44,25 +44,25 @@ extension ItemCategory {
     }
 }
 
+/// Trailing status accessory: a large spinner while processing, nothing when done,
+/// a red warning if it failed.
 struct StatusBadge: View {
     let status: ItemStatus
     var body: some View {
-        Image(systemName: status.iconName)
-            .foregroundStyle(status.tint)
-            .font(.caption)
-            .accessibilityLabel("Status: \(status.rawValue)")
-    }
-}
-
-struct CategoryChip: View {
-    let category: ItemCategory
-    var body: some View {
-        Label(category.rawValue, systemImage: category.symbol)
-            .font(.caption2.weight(.medium))
-            .padding(.horizontal, 8)
-            .padding(.vertical, 4)
-            .background(.tint.opacity(0.15), in: Capsule())
-            .foregroundStyle(.tint)
+        switch status {
+        case .pending:
+            ProgressView()
+                .progressViewStyle(.circular)
+                .scaleEffect(1.6)
+                .accessibilityLabel("Processing")
+        case .processed:
+            EmptyView()
+        case .failed:
+            Image(systemName: "exclamationmark.triangle.fill")
+                .foregroundStyle(.red)
+                .font(.title3)
+                .accessibilityLabel("Failed")
+        }
     }
 }
 

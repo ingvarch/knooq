@@ -24,7 +24,7 @@ extension ItemAnalysis {
         rawTags: [String],
         title: String,
         summary: String,
-        maxTags: Int = 6
+        maxTags: Int = 3
     ) -> ItemAnalysis {
         ItemAnalysis(
             category: ItemCategory.validated(rawCategory),

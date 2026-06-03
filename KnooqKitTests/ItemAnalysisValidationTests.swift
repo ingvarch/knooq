@@ -13,14 +13,14 @@ import Testing
         #expect(a.category == .other)
     }
 
-    @Test func tagsLowercasedAndTrimmedToSix() {
+    @Test func tagsLowercasedAndTrimmedToThree() {
         let a = ItemAnalysis.validated(
             rawCategory: "Idea",
-            rawTags: ["One", "TWO", "Three", "four", "Five", "six", "seven", "eight"],
+            rawTags: ["One", "TWO", "Three", "four", "Five"],
             title: "t", summary: "s"
         )
-        #expect(a.tags.count == 6)
-        #expect(a.tags == ["one", "two", "three", "four", "five", "six"])
+        #expect(a.tags.count == 3)
+        #expect(a.tags == ["one", "two", "three"])
     }
 
     @Test func keepsTitleAndSummary() {

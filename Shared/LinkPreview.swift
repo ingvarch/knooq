@@ -18,4 +18,9 @@ struct LinkPreview: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: LPLinkView, context: Context) {}
+
+    /// Pin a definite height so LPLinkView doesn't grab its full intrinsic size and overlap siblings.
+    func sizeThatFits(_ proposal: ProposedViewSize, uiView: LPLinkView, context: Context) -> CGSize? {
+        CGSize(width: proposal.width ?? 320, height: 160)
+    }
 }

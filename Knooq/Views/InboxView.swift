@@ -76,32 +76,30 @@ struct ItemCardView: View {
     let item: SavedItem
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack(alignment: .top) {
+        HStack(alignment: .center, spacing: 12) {
+            VStack(alignment: .leading, spacing: 6) {
                 Text(item.title ?? "Untitled")
                     .font(.headline)
                     .lineLimit(2)
-                Spacer()
-                StatusBadge(status: item.status)
+                if !item.tags.isEmpty {
+                    TagsRow(tags: item.tags)
+                }
+                if let description = item.displayDescription {
+                    Text(description)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                }
+                if item.status == .failed, let reason = item.failureReason {
+                    Label(reason, systemImage: "exclamationmark.triangle")
+                        .font(.caption2)
+                        .foregroundStyle(.red)
+                        .lineLimit(2)
+                }
             }
-            if let category = item.category {
-                CategoryChip(category: category)
-            }
-            if !item.tags.isEmpty {
-                TagsRow(tags: item.tags)
-            }
-            if let description = item.displayDescription {
-                Text(description)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(2)
-            }
-            if item.status == .failed, let reason = item.failureReason {
-                Label(reason, systemImage: "exclamationmark.triangle")
-                    .font(.caption2)
-                    .foregroundStyle(.red)
-                    .lineLimit(2)
-            }
+            Spacer(minLength: 0)
+            StatusBadge(status: item.status)
+                .padding(.trailing, 4)
         }
         .padding(.vertical, 4)
     }

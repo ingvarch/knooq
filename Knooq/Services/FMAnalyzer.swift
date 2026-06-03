@@ -8,12 +8,12 @@ struct FMItemAnalysis {
     @Guide(description: "One of: Article, Video, Recipe, Purchase, Travel, Idea, Tool, Other")
     var category: String
 
-    @Guide(description: "3-6 short lowercase tags describing the content")
+    @Guide(description: "Exactly 3 short lowercase tags describing the content")
     var tags: [String]
 
     var title: String
 
-    @Guide(description: "1-2 sentence summary of the content")
+    @Guide(description: "A detailed tl;dr of the content: 3 to 5 sentences covering the main points, key takeaways, and any actionable details")
     var summary: String
 }
 
@@ -43,10 +43,10 @@ final class FMAnalyzer: Analyzer {
     private let instructions = """
     You are a content categorization assistant. Analyze the provided text and:
     1. Categorize into exactly one of: Article, Video, Recipe, Purchase, Travel, Idea, Tool, Other.
-    2. Generate 3-6 relevant lowercase tags.
-    3. Create a concise title.
-    4. Write a 1-2 sentence summary.
-    Focus on the main topic and intent of the content.
+    2. Generate exactly 3 relevant lowercase tags.
+    3. Create a concise, descriptive title.
+    4. Write a detailed tl;dr summary of 3-5 sentences covering the main points and key takeaways.
+    Focus on the main topic, intent, and the most useful details of the content.
     """
 
     func analyze(_ text: String) async throws -> ItemAnalysis {
